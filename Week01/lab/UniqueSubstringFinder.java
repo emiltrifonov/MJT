@@ -20,7 +20,8 @@ public class UniqueSubstringFinder {
                 }
 
                 while (arr[l] != arr[i]) {
-                    charAppearanceTracker[getTrackerArrayIndex(arr, l)] = false;
+                    ind = getTrackerArrayIndex(arr, l);
+                    charAppearanceTracker[ind] = false;
                     l++;
                 }
                 l++;
