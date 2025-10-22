@@ -4,7 +4,7 @@ import bg.sofia.uni.fmi.mjt.show.date.DateEvent;
 import bg.sofia.uni.fmi.mjt.show.elimination.EliminationRule;
 import bg.sofia.uni.fmi.mjt.show.ergenka.Ergenka;
 
-public class ShowAPIImpl implements ShowAPI{
+public final class ShowAPIImpl implements ShowAPI{
     private Ergenka[] ergenkas;
     private final EliminationRule[] defaultEliminationRules;
 

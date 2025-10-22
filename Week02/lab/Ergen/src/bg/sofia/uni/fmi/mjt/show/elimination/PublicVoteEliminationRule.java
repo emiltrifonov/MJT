@@ -1,8 +1,9 @@
 package bg.sofia.uni.fmi.mjt.show.elimination;
 
+import bg.sofia.uni.fmi.mjt.show.algorithms.MajorityVoteAlgorithm;
 import bg.sofia.uni.fmi.mjt.show.ergenka.Ergenka;
 
-public class PublicVoteEliminationRule implements EliminationRule {
+public final class PublicVoteEliminationRule implements EliminationRule {
     static final String INVALID_ERGENKA_NAME = "";
     private final String[] votes;
 
@@ -31,25 +32,8 @@ public class PublicVoteEliminationRule implements EliminationRule {
         }
     }
 
-    /**
-      * Boyer-Moore algorithm
-      */
     private String getEliminatedErgenkaName() {
-        String eliminatedErgenkaName = votes[0];
-
-        int counter = 0;
-
-        for (String vote : votes) {
-            if (vote.equals(eliminatedErgenkaName)) {
-                counter++;
-            }
-            else {
-                counter--;
-                if (counter == 0) {
-                    eliminatedErgenkaName = vote;
-                }
-            }
-        }
+        String eliminatedErgenkaName = MajorityVoteAlgorithm.execute(votes);
 
         if (isEliminationMajorityVote(eliminatedErgenkaName)) {
             return eliminatedErgenkaName;

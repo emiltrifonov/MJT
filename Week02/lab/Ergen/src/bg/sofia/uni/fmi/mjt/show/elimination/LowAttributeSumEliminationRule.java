@@ -2,7 +2,7 @@ package bg.sofia.uni.fmi.mjt.show.elimination;
 
 import bg.sofia.uni.fmi.mjt.show.ergenka.Ergenka;
 
-public class LowAttributeSumEliminationRule implements EliminationRule {
+public final class LowAttributeSumEliminationRule implements EliminationRule {
     final int threshold;
 
     public LowAttributeSumEliminationRule(int threshold) {

@@ -1,21 +1,20 @@
 package bg.sofia.uni.fmi.mjt.show.ergenka;
 
 import bg.sofia.uni.fmi.mjt.show.date.DateEvent;
+import bg.sofia.uni.fmi.mjt.show.utils.FavoriteLocation;
 
-public class RomanticErgenka extends AbstractErgenka {
+public final class RomanticErgenka extends AbstractErgenka {
     static final int SHORT_DATE_LENGTH = 30;
-    static final int LONG_DATE_LENGTH = 120;
     static final int SHORT_DATE_PENALTY = -3;
+    static final int LONG_DATE_LENGTH = 120;
     static final int LONG_DATE_PENALTY = -2;
+
     static final int FAVORITE_PLACE_REWARD = 5;
 
-    /**
-     * Always saved in lowercase
-     */
-    private final String favoriteDateLocationInLowercase;
+    private final FavoriteLocation favoriteLocation;
 
     public RomanticErgenka(String name, short age, int romanceLevel, int humorLevel, int rating, String favoriteDateLocation) {
-        favoriteDateLocationInLowercase = favoriteDateLocation.toLowerCase();
+        favoriteLocation = new FavoriteLocation(favoriteDateLocation);
         super(name, age, romanceLevel, humorLevel, rating);
     }
 
@@ -24,7 +23,7 @@ public class RomanticErgenka extends AbstractErgenka {
         int penalty = getDateLengthPenalty(dateEvent.getDuration(), SHORT_DATE_LENGTH, LONG_DATE_LENGTH,
                                             SHORT_DATE_PENALTY, LONG_DATE_PENALTY);
 
-        if (isFavoriteDateLocation(dateEvent)) {
+        if (favoriteLocation.isLocationOfDate(dateEvent)) {
             return penalty + FAVORITE_PLACE_REWARD;
         }
         else {
@@ -36,9 +35,5 @@ public class RomanticErgenka extends AbstractErgenka {
     protected void modifyRating(DateEvent dateEvent) {
         setRating(((getRomanceLevel() * 7) / dateEvent.getTensionLevel())
                 + (getHumorLevel() / 3) + calculateBonuses(dateEvent));
-    }
-
-    private boolean isFavoriteDateLocation(DateEvent dateEvent) {
-        return dateEvent.getLocation().toLowerCase().equals(favoriteDateLocationInLowercase);
     }
 }
