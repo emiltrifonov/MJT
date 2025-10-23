@@ -1,6 +1,6 @@
 package bg.sofia.uni.fmi.mjt.show.algorithms;
 
-public class MajorityVoteAlgorithm {
+public final class MajorityVoteAlgorithm {
     /**
      * Boyer-Moore algorithm
      */

@@ -3,12 +3,12 @@ package bg.sofia.uni.fmi.mjt.show.ergenka;
 import bg.sofia.uni.fmi.mjt.show.date.DateEvent;
 
 public final class HumorousErgenka extends AbstractErgenka {
-    static final int SHORT_DATE_LENGTH = 30;
-    static final int SHORT_DATE_PENALTY = -2;
-    static final int LONG_DATE_LENGTH = 90;
-    static final int LONG_DATE_PENALTY = -3;
+    private static final int SHORT_DATE_LENGTH = 30;
+    private final int SHORT_DATE_PENALTY = -2;
+    private static final int LONG_DATE_LENGTH = 90;
+    private static final int LONG_DATE_PENALTY = -3;
 
-    static final int NORMAL_DATE_REWARD = 4;
+    private static final int NORMAL_DATE_REWARD = 4;
 
     public HumorousErgenka(String name, short age, int romanceLevel, int humorLevel, int rating) {
         super(name, age, romanceLevel, humorLevel, rating);

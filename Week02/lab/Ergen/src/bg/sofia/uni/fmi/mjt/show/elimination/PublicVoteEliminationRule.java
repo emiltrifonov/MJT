@@ -4,7 +4,7 @@ import bg.sofia.uni.fmi.mjt.show.algorithms.MajorityVoteAlgorithm;
 import bg.sofia.uni.fmi.mjt.show.ergenka.Ergenka;
 
 public final class PublicVoteEliminationRule implements EliminationRule {
-    static final String INVALID_ERGENKA_NAME = "";
+    private static final String INVALID_ERGENKA_NAME = "";
     private final String[] votes;
 
     public PublicVoteEliminationRule(String[] votes) {

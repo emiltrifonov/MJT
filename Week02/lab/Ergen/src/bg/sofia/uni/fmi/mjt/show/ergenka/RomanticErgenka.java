@@ -4,12 +4,12 @@ import bg.sofia.uni.fmi.mjt.show.date.DateEvent;
 import bg.sofia.uni.fmi.mjt.show.utils.FavoriteLocation;
 
 public final class RomanticErgenka extends AbstractErgenka {
-    static final int SHORT_DATE_LENGTH = 30;
-    static final int SHORT_DATE_PENALTY = -3;
-    static final int LONG_DATE_LENGTH = 120;
-    static final int LONG_DATE_PENALTY = -2;
+    private static final int SHORT_DATE_LENGTH = 30;
+    private static final int SHORT_DATE_PENALTY = -3;
+    private static final int LONG_DATE_LENGTH = 120;
+    private static final int LONG_DATE_PENALTY = -2;
 
-    static final int FAVORITE_PLACE_REWARD = 5;
+    private static final int FAVORITE_PLACE_REWARD = 5;
 
     private final FavoriteLocation favoriteLocation;
 
