@@ -3,12 +3,14 @@ package bg.sofia.uni.fmi.mjt.show.elimination;
 import bg.sofia.uni.fmi.mjt.show.algorithms.MajorityVoteAlgorithm;
 import bg.sofia.uni.fmi.mjt.show.ergenka.Ergenka;
 
+import java.util.Arrays;
+
 public final class PublicVoteEliminationRule implements EliminationRule {
     private static final String INVALID_ERGENKA_NAME = "";
     private final String[] votes;
 
     public PublicVoteEliminationRule(String[] votes) {
-        this.votes = votes;
+        this.votes = Arrays.copyOf(votes, votes.length);
     }
 
     @Override

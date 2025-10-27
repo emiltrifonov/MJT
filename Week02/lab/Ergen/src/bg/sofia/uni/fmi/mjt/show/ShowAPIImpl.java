@@ -4,18 +4,21 @@ import bg.sofia.uni.fmi.mjt.show.date.DateEvent;
 import bg.sofia.uni.fmi.mjt.show.elimination.EliminationRule;
 import bg.sofia.uni.fmi.mjt.show.ergenka.Ergenka;
 
+import java.util.Arrays;
+
 public final class ShowAPIImpl implements ShowAPI{
     private Ergenka[] ergenkas;
     private final EliminationRule[] defaultEliminationRules;
 
     public ShowAPIImpl(Ergenka[] ergenkas, EliminationRule[] defaultEliminationRules) {
-        this.ergenkas = ergenkas;
-        this.defaultEliminationRules = defaultEliminationRules;
+        this.ergenkas = Arrays.copyOf(ergenkas, ergenkas.length);
+        this.defaultEliminationRules = Arrays.copyOf
+                (defaultEliminationRules, defaultEliminationRules.length);
     }
 
     @Override
     public Ergenka[] getErgenkas() {
-        return ergenkas;
+        return Arrays.copyOf(ergenkas, ergenkas.length);
     }
 
     @Override
