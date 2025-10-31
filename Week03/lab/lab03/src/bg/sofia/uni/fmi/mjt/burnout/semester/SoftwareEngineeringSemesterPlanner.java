@@ -18,7 +18,7 @@ public final class SoftwareEngineeringSemesterPlanner extends AbstractSemesterPl
             throw new InvalidSubjectRequirementsException();
         }
 
-        UniversitySubject[] selectedSubjects = optimalSubjectChoice(semesterPlan);
+        UniversitySubject[] selectedSubjects = chooseOptimalSubjects(semesterPlan);
 
         if (selectedSubjects == null) {
             throw new CryToStudentsDepartmentException("SE student unable to cover semester credits.");
@@ -27,7 +27,7 @@ public final class SoftwareEngineeringSemesterPlanner extends AbstractSemesterPl
         return selectedSubjects;
     }
 
-    private UniversitySubject[] optimalSubjectChoice(SemesterPlan semesterPlan) {
+    private UniversitySubject[] chooseOptimalSubjects(SemesterPlan semesterPlan) {
         UniversitySubject[] sortedByCreditsDesc =
                 UniversitySubjectsSortByCreditsDescending.execute(semesterPlan.subjects());
 
@@ -39,14 +39,6 @@ public final class SoftwareEngineeringSemesterPlanner extends AbstractSemesterPl
         }
 
         int countOfChosenSubjects = 0;
-        /*
-         * Try to cover all categories with one iteration over the available subjects
-         * If covered:
-         *   - credits were also covered -> good
-         *   OR
-         *   - credits still need to be covered -> iterate again to potentially get enough credits
-         * If not covered - return null, cant be covered in any way
-         */
         for (int i = 0; i < sortedByCreditsDesc.length && categoriesAreNotCovered(remainingSubjectsPerCategory); i++) {
             if (!isSubjectTaken[i]) {
                 if (remainingSubjectsPerCategory[sortedByCreditsDesc[i].category().getIndex()] > 0) {
@@ -76,9 +68,9 @@ public final class SoftwareEngineeringSemesterPlanner extends AbstractSemesterPl
 
         UniversitySubject[] chosenSubjects = new UniversitySubject[countOfChosenSubjects];
         int index = 0;
-        for (int i = 0; i < semesterPlan.subjects().length; i++) {
+        for (int i = 0; i < sortedByCreditsDesc.length; i++) {
             if (isSubjectTaken[i]) {
-                chosenSubjects[index++] = semesterPlan.subjects()[i];
+                chosenSubjects[index++] = sortedByCreditsDesc[i];
             }
         }
 
