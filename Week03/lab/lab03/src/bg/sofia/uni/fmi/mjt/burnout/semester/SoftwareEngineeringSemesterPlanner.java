@@ -3,10 +3,8 @@ package bg.sofia.uni.fmi.mjt.burnout.semester;
 import bg.sofia.uni.fmi.mjt.burnout.exception.CryToStudentsDepartmentException;
 import bg.sofia.uni.fmi.mjt.burnout.exception.InvalidSubjectRequirementsException;
 import bg.sofia.uni.fmi.mjt.burnout.plan.SemesterPlan;
-import bg.sofia.uni.fmi.mjt.burnout.subject.Category;
-import bg.sofia.uni.fmi.mjt.burnout.subject.SubjectRequirement;
 import bg.sofia.uni.fmi.mjt.burnout.subject.UniversitySubject;
-import bg.sofia.uni.fmi.mjt.burnout.util.UniversitySubjectsSortByCreditsDescending;
+import bg.sofia.uni.fmi.mjt.burnout.util.SortUniversitySubjectsByCreditsDescending;
 
 public final class SoftwareEngineeringSemesterPlanner extends AbstractSemesterPlanner {
     @Override
@@ -28,22 +26,18 @@ public final class SoftwareEngineeringSemesterPlanner extends AbstractSemesterPl
     }
 
     private UniversitySubject[] chooseOptimalSubjects(SemesterPlan semesterPlan) {
-        UniversitySubject[] sortedByCreditsDesc =
-                UniversitySubjectsSortByCreditsDescending.execute(semesterPlan.subjects());
+        UniversitySubject[] subjectsSortedByCreditsDesc = SortUniversitySubjectsByCreditsDescending.execute(semesterPlan.subjects());
 
         int remainingCredits = semesterPlan.minimalAmountOfCredits();
-        int[] remainingSubjectsPerCategory = new int[Category.count];
+        int[] remainingSubjectsPerCategory = createRemainingSubjectPerCategoryArray(semesterPlan);
         boolean[] isSubjectTaken = new boolean[semesterPlan.subjects().length];
-        for (SubjectRequirement sr : semesterPlan.subjectRequirements()) {
-            remainingSubjectsPerCategory[sr.category().getIndex()] = sr.minAmountEnrolled();
-        }
 
         int countOfChosenSubjects = 0;
-        for (int i = 0; i < sortedByCreditsDesc.length && categoriesAreNotCovered(remainingSubjectsPerCategory); i++) {
+        for (int i = 0; i < subjectsSortedByCreditsDesc.length && categoriesAreNotCovered(remainingSubjectsPerCategory); i++) {
             if (!isSubjectTaken[i]) {
-                if (remainingSubjectsPerCategory[sortedByCreditsDesc[i].category().getIndex()] > 0) {
-                    remainingSubjectsPerCategory[sortedByCreditsDesc[i].category().getIndex()]--;
-                    remainingCredits -= sortedByCreditsDesc[i].credits();
+                if (remainingSubjectsPerCategory[subjectsSortedByCreditsDesc[i].category().getIndex()] > 0) {
+                    remainingSubjectsPerCategory[subjectsSortedByCreditsDesc[i].category().getIndex()]--;
+                    remainingCredits -= subjectsSortedByCreditsDesc[i].credits();
                     isSubjectTaken[i] = true;
                     countOfChosenSubjects++;
                 }
@@ -54,11 +48,11 @@ public final class SoftwareEngineeringSemesterPlanner extends AbstractSemesterPl
             return null;
         }
 
-        for (int i = 0; i < sortedByCreditsDesc.length && remainingCredits > 0; i++) {
+        for (int i = 0; i < subjectsSortedByCreditsDesc.length && remainingCredits > 0; i++) {
             if (!isSubjectTaken[i]) {
                 isSubjectTaken[i] = true;
                 countOfChosenSubjects++;
-                remainingCredits -= sortedByCreditsDesc[i].credits();
+                remainingCredits -= subjectsSortedByCreditsDesc[i].credits();
             }
         }
 
@@ -68,9 +62,9 @@ public final class SoftwareEngineeringSemesterPlanner extends AbstractSemesterPl
 
         UniversitySubject[] chosenSubjects = new UniversitySubject[countOfChosenSubjects];
         int index = 0;
-        for (int i = 0; i < sortedByCreditsDesc.length; i++) {
+        for (int i = 0; i < subjectsSortedByCreditsDesc.length; i++) {
             if (isSubjectTaken[i]) {
-                chosenSubjects[index++] = sortedByCreditsDesc[i];
+                chosenSubjects[index++] = subjectsSortedByCreditsDesc[i];
             }
         }
 
