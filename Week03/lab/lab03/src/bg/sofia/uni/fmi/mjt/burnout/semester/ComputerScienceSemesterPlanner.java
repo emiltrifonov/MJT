@@ -17,7 +17,7 @@ public final class ComputerScienceSemesterPlanner extends AbstractSemesterPlanne
             throw new IllegalArgumentException("Null semesterPlan in ComputerScienceSemesterPlanner constructor.");
         }
         else if(subjectRequirementsContainDuplicates(semesterPlan)) {
-            throw new InvalidSubjectRequirementsException();
+            throw new InvalidSubjectRequirementsException("Duplicates in semesterPlan in ComputerScienceSemesterPlanner constructor.");
         }
 
         UniversitySubject[] sortedByRatingDesc = UniversitySubjectsSortByRatingDescending.execute(semesterPlan.subjects());

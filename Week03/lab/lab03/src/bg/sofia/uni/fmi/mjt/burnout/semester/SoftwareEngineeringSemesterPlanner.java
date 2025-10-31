@@ -15,7 +15,7 @@ public final class SoftwareEngineeringSemesterPlanner extends AbstractSemesterPl
             throw new IllegalArgumentException("Null semesterPlan in SoftwareEngineeringSemesterPlanner constructor.");
         }
         else if (subjectRequirementsContainDuplicates(semesterPlan)) {
-            throw new InvalidSubjectRequirementsException();
+            throw new InvalidSubjectRequirementsException("Duplicates in semesterPlan in SoftwareEngineeringSemesterPlanner constructor.");
         }
 
         UniversitySubject[] selectedSubjects = chooseOptimalSubjects(semesterPlan);
