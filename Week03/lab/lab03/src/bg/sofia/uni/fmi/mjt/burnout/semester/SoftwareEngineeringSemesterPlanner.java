@@ -16,28 +16,28 @@ public final class SoftwareEngineeringSemesterPlanner extends AbstractSemesterPl
             throw new InvalidSubjectRequirementsException("Duplicates in semesterPlan in SoftwareEngineeringSemesterPlanner constructor.");
         }
 
-        UniversitySubject[] selectedSubjects = chooseOptimalSubjects(semesterPlan);
-
-        if (selectedSubjects == null) {
-            throw new CryToStudentsDepartmentException("SE student unable to cover semester credits.");
-        }
-
-        return selectedSubjects;
-    }
-
-    private UniversitySubject[] chooseOptimalSubjects(SemesterPlan semesterPlan) {
         UniversitySubject[] subjectsSortedByCreditsDesc = SortUniversitySubjectsByCreditsDescending.execute(semesterPlan.subjects());
-
         int remainingCredits = semesterPlan.minimalAmountOfCredits();
         int[] remainingSubjectsPerCategory = createRemainingSubjectPerCategoryArray(semesterPlan);
         boolean[] isSubjectTaken = new boolean[semesterPlan.subjects().length];
+        int countOfChosenSubjects = attemptToCoverCategories(subjectsSortedByCreditsDesc, remainingSubjectsPerCategory, isSubjectTaken);
 
+        remainingCredits -= getCreditsAcquiredWithBatchOfSubjects(subjectsSortedByCreditsDesc, isSubjectTaken);
+
+        countOfChosenSubjects += attemptToCoverRemainingCredits(subjectsSortedByCreditsDesc, remainingCredits, isSubjectTaken);
+
+        return getFinalSubjects(subjectsSortedByCreditsDesc, countOfChosenSubjects, isSubjectTaken);
+    }
+
+    /**
+     * @return Count of covered subjects
+     */
+    private int attemptToCoverCategories(UniversitySubject[] subjectsSortedByCreditsDesc, int[] remainingSubjectsPerCategory, boolean[] isSubjectTaken) {
         int countOfChosenSubjects = 0;
         for (int i = 0; i < subjectsSortedByCreditsDesc.length && categoriesAreNotCovered(remainingSubjectsPerCategory); i++) {
             if (!isSubjectTaken[i]) {
                 if (remainingSubjectsPerCategory[subjectsSortedByCreditsDesc[i].category().ordinal()] > 0) {
                     remainingSubjectsPerCategory[subjectsSortedByCreditsDesc[i].category().ordinal()]--;
-                    remainingCredits -= subjectsSortedByCreditsDesc[i].credits();
                     isSubjectTaken[i] = true;
                     countOfChosenSubjects++;
                 }
@@ -45,9 +45,17 @@ public final class SoftwareEngineeringSemesterPlanner extends AbstractSemesterPl
         }
 
         if (categoriesAreNotCovered(remainingSubjectsPerCategory)) {
-            return null;
+            throw new CryToStudentsDepartmentException("SE student unable to cover all categories of subjects.");
         }
 
+        return countOfChosenSubjects;
+    }
+
+    /**
+     * @return Count of covered subjects
+     */
+    private int attemptToCoverRemainingCredits(UniversitySubject[] subjectsSortedByCreditsDesc, int remainingCredits, boolean[] isSubjectTaken) {
+        int countOfChosenSubjects = 0;
         for (int i = 0; i < subjectsSortedByCreditsDesc.length && remainingCredits > 0; i++) {
             if (!isSubjectTaken[i]) {
                 isSubjectTaken[i] = true;
@@ -57,13 +65,28 @@ public final class SoftwareEngineeringSemesterPlanner extends AbstractSemesterPl
         }
 
         if (remainingCredits > 0) {
-            return null;
+            throw new CryToStudentsDepartmentException("SE student unable to cover semester credits.");
         }
 
-        UniversitySubject[] chosenSubjects = new UniversitySubject[countOfChosenSubjects];
+        return countOfChosenSubjects;
+    }
+
+    private int getCreditsAcquiredWithBatchOfSubjects(UniversitySubject[] subjects, boolean[] isTaken) {
+        int totalCredits = 0;
+        for (int i = 0; i < subjects.length; i++) {
+            if (isTaken[i]) {
+                totalCredits += subjects[i].credits();
+            }
+        }
+
+        return totalCredits;
+    }
+
+    private UniversitySubject[] getFinalSubjects(UniversitySubject[] subjectsSortedByCreditsDesc, int count, boolean[] isTaken) {
+        UniversitySubject[] chosenSubjects = new UniversitySubject[count];
         int index = 0;
         for (int i = 0; i < subjectsSortedByCreditsDesc.length; i++) {
-            if (isSubjectTaken[i]) {
+            if (isTaken[i]) {
                 chosenSubjects[index++] = subjectsSortedByCreditsDesc[i];
             }
         }

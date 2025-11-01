@@ -8,7 +8,6 @@ public enum Category {
     PRACTICAL(0.05);
 
     private final double coefficient;
-    public static final int count = 4;
 
     Category(double coefficient) {
         this.coefficient = coefficient;

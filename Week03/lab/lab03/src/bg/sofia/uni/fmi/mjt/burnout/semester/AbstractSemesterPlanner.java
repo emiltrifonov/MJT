@@ -19,20 +19,20 @@ public sealed abstract class AbstractSemesterPlanner implements SemesterPlannerA
         }
         validateSubjects(subjects);
 
-        int totalStudyTime = 0, totalRestTime = 0;
+        int studyTime = 0, restTime = 0;
 
         for (UniversitySubject us : subjects) {
-            totalStudyTime += us.neededStudyTime();
-            totalRestTime += (int)Math.ceil(us.neededStudyTime() * us.category().getCoefficient());
+            studyTime += us.neededStudyTime();
+            restTime += (int)Math.ceil(us.neededStudyTime() * us.category().getCoefficient());
         }
 
-        checkForDisappointmentException(totalRestTime, maximumSlackTime);
+        checkForDisappointmentException(restTime, maximumSlackTime);
 
-        return getJarsCount(totalStudyTime, totalRestTime, semesterDuration);
+        return getJarsCount(studyTime, restTime, semesterDuration);
     }
 
     protected boolean subjectRequirementsContainDuplicates(SemesterPlan semesterPlan) {
-        boolean[] isMet = new boolean[Category.count];
+        boolean[] isMet = new boolean[Category.values().length];
 
         for (SubjectRequirement sr : semesterPlan.subjectRequirements()) {
             int index = sr.category().ordinal();
@@ -58,7 +58,7 @@ public sealed abstract class AbstractSemesterPlanner implements SemesterPlannerA
     }
 
     protected int[] createRemainingSubjectPerCategoryArray(SemesterPlan semesterPlan) {
-        int[] remainingSubjectsPerCategory = new int[Category.count];
+        int[] remainingSubjectsPerCategory = new int[Category.values().length];
         for (SubjectRequirement sr : semesterPlan.subjectRequirements()) {
             remainingSubjectsPerCategory[sr.category().ordinal()] = sr.minAmountEnrolled();
         }
