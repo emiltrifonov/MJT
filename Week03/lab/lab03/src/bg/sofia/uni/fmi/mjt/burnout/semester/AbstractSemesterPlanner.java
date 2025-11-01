@@ -35,7 +35,7 @@ public sealed abstract class AbstractSemesterPlanner implements SemesterPlannerA
         boolean[] isMet = new boolean[Category.count];
 
         for (SubjectRequirement sr : semesterPlan.subjectRequirements()) {
-            int index = sr.category().getIndex();
+            int index = sr.category().ordinal();
             if (isMet[index]) {
                 return true;
             }
@@ -60,7 +60,7 @@ public sealed abstract class AbstractSemesterPlanner implements SemesterPlannerA
     protected int[] createRemainingSubjectPerCategoryArray(SemesterPlan semesterPlan) {
         int[] remainingSubjectsPerCategory = new int[Category.count];
         for (SubjectRequirement sr : semesterPlan.subjectRequirements()) {
-            remainingSubjectsPerCategory[sr.category().getIndex()] = sr.minAmountEnrolled();
+            remainingSubjectsPerCategory[sr.category().ordinal()] = sr.minAmountEnrolled();
         }
 
         return remainingSubjectsPerCategory;

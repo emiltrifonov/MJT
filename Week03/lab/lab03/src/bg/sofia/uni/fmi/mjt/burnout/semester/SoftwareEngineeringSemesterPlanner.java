@@ -35,8 +35,8 @@ public final class SoftwareEngineeringSemesterPlanner extends AbstractSemesterPl
         int countOfChosenSubjects = 0;
         for (int i = 0; i < subjectsSortedByCreditsDesc.length && categoriesAreNotCovered(remainingSubjectsPerCategory); i++) {
             if (!isSubjectTaken[i]) {
-                if (remainingSubjectsPerCategory[subjectsSortedByCreditsDesc[i].category().getIndex()] > 0) {
-                    remainingSubjectsPerCategory[subjectsSortedByCreditsDesc[i].category().getIndex()]--;
+                if (remainingSubjectsPerCategory[subjectsSortedByCreditsDesc[i].category().ordinal()] > 0) {
+                    remainingSubjectsPerCategory[subjectsSortedByCreditsDesc[i].category().ordinal()]--;
                     remainingCredits -= subjectsSortedByCreditsDesc[i].credits();
                     isSubjectTaken[i] = true;
                     countOfChosenSubjects++;

@@ -24,7 +24,7 @@ public final class ComputerScienceSemesterPlanner extends AbstractSemesterPlanne
         int remainingCredits = semesterPlan.minimalAmountOfCredits();
         int numberOfSubjectsEnrolled = 0;
         for (int i = 0; i < subjectsSortedByRatingDesc.length && categoriesAreNotCovered(remainingSubjectsPerCategory) && remainingCredits > 0; i++) {
-            remainingSubjectsPerCategory[subjectsSortedByRatingDesc[i].category().getIndex()]--;
+            remainingSubjectsPerCategory[subjectsSortedByRatingDesc[i].category().ordinal()]--;
             remainingCredits -= subjectsSortedByRatingDesc[i].credits();
             numberOfSubjectsEnrolled = i;
         }
