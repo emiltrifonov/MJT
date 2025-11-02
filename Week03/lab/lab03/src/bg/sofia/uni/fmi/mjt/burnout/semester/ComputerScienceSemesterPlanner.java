@@ -4,11 +4,18 @@ import bg.sofia.uni.fmi.mjt.burnout.exception.CryToStudentsDepartmentException;
 import bg.sofia.uni.fmi.mjt.burnout.exception.InvalidSubjectRequirementsException;
 import bg.sofia.uni.fmi.mjt.burnout.plan.SemesterPlan;
 import bg.sofia.uni.fmi.mjt.burnout.subject.UniversitySubject;
+import bg.sofia.uni.fmi.mjt.burnout.util.SortUniversitySubjects;
 import bg.sofia.uni.fmi.mjt.burnout.util.SortUniversitySubjectsByRatingDescending;
 
 import java.util.Arrays;
 
 public final class ComputerScienceSemesterPlanner extends AbstractSemesterPlanner {
+    private static final SortUniversitySubjects sort;
+
+    static {
+        sort = new SortUniversitySubjectsByRatingDescending();
+    }
+
     @Override
     public UniversitySubject[] calculateSubjectList(SemesterPlan semesterPlan) throws InvalidSubjectRequirementsException {
         if (semesterPlan == null) {
@@ -18,7 +25,13 @@ public final class ComputerScienceSemesterPlanner extends AbstractSemesterPlanne
             throw new InvalidSubjectRequirementsException("Duplicates in semesterPlan in ComputerScienceSemesterPlanner constructor.");
         }
 
-        UniversitySubject[] subjectsSortedByRatingDesc = SortUniversitySubjectsByRatingDescending.execute(semesterPlan.subjects());
+        UniversitySubject[] subjectsSortedByRatingDesc = sort.execute(semesterPlan.subjects());
+        int numberOfSubjectsEnrolled = getNumberOfSubjectsEnrolled(semesterPlan, subjectsSortedByRatingDesc);
+
+        return Arrays.copyOf(subjectsSortedByRatingDesc, numberOfSubjectsEnrolled);
+    }
+
+    private int getNumberOfSubjectsEnrolled(SemesterPlan semesterPlan, UniversitySubject[] subjectsSortedByRatingDesc) {
         int[] remainingSubjectsPerCategory = createRemainingSubjectPerCategoryArray(semesterPlan);
 
         int remainingCredits = semesterPlan.minimalAmountOfCredits();
@@ -33,6 +46,6 @@ public final class ComputerScienceSemesterPlanner extends AbstractSemesterPlanne
             throw new CryToStudentsDepartmentException("CS student unable to cover semester credits.");
         }
 
-        return Arrays.copyOf(subjectsSortedByRatingDesc, numberOfSubjectsEnrolled);
+        return numberOfSubjectsEnrolled;
     }
 }

@@ -4,9 +4,16 @@ import bg.sofia.uni.fmi.mjt.burnout.exception.CryToStudentsDepartmentException;
 import bg.sofia.uni.fmi.mjt.burnout.exception.InvalidSubjectRequirementsException;
 import bg.sofia.uni.fmi.mjt.burnout.plan.SemesterPlan;
 import bg.sofia.uni.fmi.mjt.burnout.subject.UniversitySubject;
+import bg.sofia.uni.fmi.mjt.burnout.util.SortUniversitySubjects;
 import bg.sofia.uni.fmi.mjt.burnout.util.SortUniversitySubjectsByCreditsDescending;
 
 public final class SoftwareEngineeringSemesterPlanner extends AbstractSemesterPlanner {
+    private static final SortUniversitySubjects sort;
+
+    static {
+        sort = new SortUniversitySubjectsByCreditsDescending();
+    }
+
     @Override
     public UniversitySubject[] calculateSubjectList(SemesterPlan semesterPlan) throws InvalidSubjectRequirementsException {
         if (semesterPlan == null) {
@@ -16,7 +23,7 @@ public final class SoftwareEngineeringSemesterPlanner extends AbstractSemesterPl
             throw new InvalidSubjectRequirementsException("Duplicates in semesterPlan in SoftwareEngineeringSemesterPlanner constructor.");
         }
 
-        UniversitySubject[] subjectsSortedByCreditsDesc = SortUniversitySubjectsByCreditsDescending.execute(semesterPlan.subjects());
+        UniversitySubject[] subjectsSortedByCreditsDesc = sort.execute(semesterPlan.subjects());
         int remainingCredits = semesterPlan.minimalAmountOfCredits();
         int[] remainingSubjectsPerCategory = createRemainingSubjectPerCategoryArray(semesterPlan);
         boolean[] isSubjectTaken = new boolean[semesterPlan.subjects().length];
