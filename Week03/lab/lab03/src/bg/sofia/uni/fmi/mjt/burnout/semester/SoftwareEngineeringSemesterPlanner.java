@@ -4,8 +4,8 @@ import bg.sofia.uni.fmi.mjt.burnout.exception.CryToStudentsDepartmentException;
 import bg.sofia.uni.fmi.mjt.burnout.exception.InvalidSubjectRequirementsException;
 import bg.sofia.uni.fmi.mjt.burnout.plan.SemesterPlan;
 import bg.sofia.uni.fmi.mjt.burnout.subject.UniversitySubject;
-import bg.sofia.uni.fmi.mjt.burnout.util.SortUniversitySubjects;
-import bg.sofia.uni.fmi.mjt.burnout.util.SortUniversitySubjectsByCreditsDescending;
+import bg.sofia.uni.fmi.mjt.burnout.sort.SortUniversitySubjects;
+import bg.sofia.uni.fmi.mjt.burnout.sort.SortUniversitySubjectsByCreditsDescending;
 
 public final class SoftwareEngineeringSemesterPlanner extends AbstractSemesterPlanner {
     private static final SortUniversitySubjects sort;

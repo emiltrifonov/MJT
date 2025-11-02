@@ -1,4 +1,4 @@
-package bg.sofia.uni.fmi.mjt.burnout.util;
+package bg.sofia.uni.fmi.mjt.burnout.sort;
 
 import bg.sofia.uni.fmi.mjt.burnout.subject.UniversitySubject;
 
