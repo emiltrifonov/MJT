@@ -36,5 +36,4 @@ public sealed interface Workout permits CardioWorkout, StrengthWorkout, YogaSess
      * @return the workout type.
      */
     WorkoutType getType();
-
 }

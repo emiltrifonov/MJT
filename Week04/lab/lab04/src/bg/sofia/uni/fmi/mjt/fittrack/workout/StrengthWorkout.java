@@ -7,6 +7,10 @@ public final class StrengthWorkout extends AbstractWorkout implements Workout {
         super(name, duration, caloriesBurned, difficulty);
     }
 
+    public StrengthWorkout(StrengthWorkout other) {
+        super(other);
+    }
+
     @Override
     public String getName() {
         return super.getName();

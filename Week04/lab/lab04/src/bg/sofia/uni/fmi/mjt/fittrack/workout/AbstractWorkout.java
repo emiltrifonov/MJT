@@ -2,7 +2,9 @@ package bg.sofia.uni.fmi.mjt.fittrack.workout;
 
 import bg.sofia.uni.fmi.mjt.fittrack.exception.InvalidWorkoutException;
 
-public class AbstractWorkout {
+import java.util.Objects;
+
+public abstract class AbstractWorkout {
     private static final int MIN_DIFF = 1;
     private static final int MAX_DIFF = 5;
 
@@ -34,6 +36,14 @@ public class AbstractWorkout {
         this.difficulty = difficulty;
     }
 
+    public AbstractWorkout(AbstractWorkout other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Null argument in copy constructor.");
+        }
+
+        this(other.name, other.duration, other.caloriesBurned, other.difficulty);
+    }
+
     public String getName() {
         return name;
     }
@@ -48,5 +58,18 @@ public class AbstractWorkout {
 
     public int getDifficulty() {
         return difficulty;
+    }
+
+    public abstract WorkoutType getType();
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof AbstractWorkout that)) return false;
+        return getType() == that.getType() && getDuration() == that.getDuration() && getCaloriesBurned() == that.getCaloriesBurned() && getDifficulty() == that.getDifficulty();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getType(), getDuration(), getCaloriesBurned(), getDifficulty());
     }
 }

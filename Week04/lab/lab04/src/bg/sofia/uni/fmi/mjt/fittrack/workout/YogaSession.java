@@ -7,6 +7,10 @@ public final class YogaSession extends AbstractWorkout implements Workout {
         super(name, duration, caloriesBurned, difficulty);
     }
 
+    public YogaSession(YogaSession other) {
+        super(other);
+    }
+
     @Override
     public String getName() {
         return super.getName();
