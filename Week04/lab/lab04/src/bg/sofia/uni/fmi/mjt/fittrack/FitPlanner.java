@@ -76,9 +76,8 @@ public class FitPlanner implements FitPlannerAPI {
         Map<WorkoutType, List<Workout>> workoutsByType = new EnumMap<>(WorkoutType.class);
 
         for (Workout workout : availableWorkouts) {
-            workoutsByType.putIfAbsent(workout.getType(), new ArrayList<Workout>());
-            List<Workout> workouts = workoutsByType.get(workout.getType());
-            workouts.add(workout);
+            workoutsByType.putIfAbsent(workout.getType(), new ArrayList<>());
+            workoutsByType.get(workout.getType()).add(workout);
         }
 
         return workoutsByType;

@@ -36,14 +36,6 @@ public abstract class AbstractWorkout {
         this.difficulty = difficulty;
     }
 
-    public AbstractWorkout(AbstractWorkout other) {
-        if (other == null) {
-            throw new IllegalArgumentException("Null argument in copy constructor.");
-        }
-
-        this(other.name, other.duration, other.caloriesBurned, other.difficulty);
-    }
-
     public String getName() {
         return name;
     }
