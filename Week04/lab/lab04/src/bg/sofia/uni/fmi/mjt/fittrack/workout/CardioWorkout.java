@@ -7,10 +7,6 @@ public final class CardioWorkout extends AbstractWorkout implements Workout {
         super(name, duration, caloriesBurned, difficulty);
     }
 
-    public CardioWorkout(CardioWorkout other) {
-        super(other);
-    }
-
     @Override
     public String getName() {
         return super.getName();

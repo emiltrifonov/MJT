@@ -12,19 +12,21 @@ import java.util.List;
 public class Main {
     static void main() throws OptimalPlanImpossibleException  {
         List<Workout> workouts = Arrays.asList(
+                new CardioWorkout("Cycling", 60, 600, 5),
                 new CardioWorkout("HIIT", 30, 400, 4),
                 new StrengthWorkout("Upper Body", 45, 350, 3),
-                new YogaSession("Morning Flow", 20, 150, 2),
-                new CardioWorkout("Cycling", 60, 600, 5),
+                new YogaSession("Evening Relax", 15, 100, 1),
                 new StrengthWorkout("Leg Day", 30, 250, 2),
-                new YogaSession("Evening Relax", 15, 100, 1)
+                new YogaSession("Morning Flow", 20, 150, 2)
+
         );
 
         FitPlanner planner = new FitPlanner(workouts);
         List<Workout> plan = planner.generateOptimalWeeklyPlan(120);
 
         for (Workout w : plan) {
-            System.out.println(w);
+            System.out.println(w.getName() + " " + w.getDuration()
+                    + " " + w.getCaloriesBurned() + " " + w.getDifficulty());
         }
 
 // CardioWorkout[name=Cycling, duration=60, caloriesBurned=600, difficulty=5]

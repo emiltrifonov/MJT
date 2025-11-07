@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class FitPlanner implements FitPlannerAPI {
+public final class FitPlanner implements FitPlannerAPI {
     private final ArrayList<Workout> availableWorkouts;
     private final boolean returnEmptyWorkouts;
 
@@ -55,13 +55,12 @@ public class FitPlanner implements FitPlannerAPI {
             return List.of();
         }
 
-        int optimalCaloriesBurned = getMostCaloriesBurned(totalMinutes);
+        List<Workout> workoutsInPlan = new ArrayList<>(getOptimalWorkouts(totalMinutes));
 
-        if (optimalCaloriesBurned == 0) {
+        if (workoutsInPlan.isEmpty()) {
             throw new OptimalPlanImpossibleException("No possible workout plan.");
         }
 
-        List<Workout> workoutsInPlan = gatherPlanWithOptimalCalories(optimalCaloriesBurned);
         workoutsInPlan.sort(new WorkoutByCaloriesAndDifficultyDescComparator());
 
         return workoutsInPlan;
@@ -124,28 +123,39 @@ public class FitPlanner implements FitPlannerAPI {
 
     /**
      * Knapsack Algorithm
-     * @return Returns the optimal calories burned in totalMinutes
+     * @return Returns a Collection containing the optimal workouts
      */
-    private int getMostCaloriesBurned(int totalMinutes) {
-        // Initializing dp array
+    private Collection<Workout> getOptimalWorkouts(int totalMinutes) {
+        boolean[][] isUsed = new boolean[availableWorkouts.size()][totalMinutes+1];
         int[] dp = new int[totalMinutes + 1];
 
-        // Taking first i elements
         for (int i = 1; i <= availableWorkouts.size(); i++) {
-
-            // Starting from back, so that we also have data of
-            // previous computation of i-1 items
             for (int j = totalMinutes; j >= availableWorkouts.get(i - 1).getDuration(); j--) {
-                dp[j] = Math.max(dp[j], dp[j - availableWorkouts.get(i - 1).getDuration()]
-                        + availableWorkouts.get(i - 1).getCaloriesBurned());
+                Workout workout = availableWorkouts.get(i - 1);
+
+                int prev = dp[j - workout.getDuration()] + workout.getCaloriesBurned();
+
+                if (prev > dp[j]) {
+                    dp[j] = prev;
+                    isUsed[i-1][j] = true;
+                }
             }
         }
 
-        return dp[totalMinutes];
+        return getUsedWorkouts(totalMinutes, isUsed);
     }
 
-    private List<Workout> gatherPlanWithOptimalCalories(int optimalCalories) {
+    private Collection<Workout> getUsedWorkouts(int remainingMinutes, boolean[][] isUsed) {
+        Collection<Workout> usedWorkouts = new ArrayList<>();
 
-        return new ArrayList<>();
+        for (int i = availableWorkouts.size() - 1; i >= 0 && remainingMinutes > 0; i--) {
+            if (isUsed[i][remainingMinutes]) {
+                Workout workout = availableWorkouts.get(i);
+                usedWorkouts.add(workout);
+                remainingMinutes -= workout.getDuration();
+            }
+        }
+
+        return usedWorkouts;
     }
 }
