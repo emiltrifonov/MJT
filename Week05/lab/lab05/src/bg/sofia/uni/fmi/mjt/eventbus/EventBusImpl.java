@@ -5,25 +5,24 @@ import bg.sofia.uni.fmi.mjt.eventbus.exception.MissingSubscriptionException;
 import bg.sofia.uni.fmi.mjt.eventbus.subscribers.Subscriber;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class EventBusImpl implements EventBus {
-    // Class<?> -> Event<?> maybe?????
-    // *********** or maybe nvm Class<T> means smth else
-    Map<Class<?>, Set<Subscriber<?>>> eventSubscriberMap;
-    Set<Event<?>> events;
+    private final Map<Class<? extends Event<?>>, Set<Subscriber<? extends Event<?>>>> eventSubscriberMap;
+    private final Set<Event<?>> events;
 
     public EventBusImpl() {
         eventSubscriberMap = new HashMap<>();
         events = new HashSet<>();
     }
 
-    // parameter T extends Event<?> so should be
-    // safe to cast Class<T> to Event<?> maybe?? or smth else
     @Override
     public <T extends Event<?>> void subscribe(Class<T> eventType, Subscriber<? super T> subscriber) {
         checkEventType(eventType);
@@ -56,11 +55,14 @@ public class EventBusImpl implements EventBus {
 
         events.add(event);
 
-        for (Class<?> eventType : eventSubscriberMap.keySet()) {
-            if (event.getClass() == eventType) {
-                for (Subscriber<?> subscriber : eventSubscriberMap.get(eventType)) {
-                    //subscriber.onEvent(event); gg
-                }
+        if (eventSubscriberMap.containsKey(event.getClass())) {
+            for (Subscriber<?> subscriber : eventSubscriberMap.get(event.getClass())) {
+
+                // Safe to cast subscriber to Subscriber<T> due to subscriber being
+                // an element in a Set of Subscriber<Event<?>> and
+                // this method specifying that <T extends Event<?>>
+                ((Subscriber<T>)subscriber).onEvent(event);
+
             }
         }
     }
@@ -73,7 +75,11 @@ public class EventBusImpl implements EventBus {
 
     @Override
     public Collection<? extends Event<?>> getEventLogs(Class<? extends Event<?>> eventType, Instant from, Instant to) {
-        Collection<Event<?>> eventLogs = new HashSet<>();
+        if (from.equals(to)) {
+            return Collections.emptyList();
+        }
+
+        List<Event<?>> eventLogs = new ArrayList<>();
 
         for (Event<?> event : events) {
             if (event.getClass() == eventType && isEventInTimestamp(event, from, to)) {
@@ -107,6 +113,6 @@ public class EventBusImpl implements EventBus {
     }
 
     private boolean isEventInTimestamp(Event<?> event, Instant from, Instant to) {
-        return event.getTimestamp().compareTo(from) >= 0 && event.getTimestamp().compareTo(to) <= 0;
+        return event.getTimestamp().compareTo(from) >= 0 && event.getTimestamp().compareTo(to) < 0;
     }
 }
