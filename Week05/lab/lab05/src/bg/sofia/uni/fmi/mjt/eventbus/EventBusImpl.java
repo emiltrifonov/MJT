@@ -65,6 +65,15 @@ public class EventBusImpl implements EventBus {
 
             }
         }
+
+
+        // alternatively we could avoid the cast to Subscriber<T>
+        // if we use the Subscriber raw type instead?
+        /*if (eventSubscriberMap.containsKey(event.getClass())) {
+            for (Subscriber subscriber : eventSubscriberMap.get(event.getClass())) {
+                subscriber.onEvent(event);
+            }
+        }*/
     }
 
     @Override
