@@ -37,12 +37,7 @@ public class EventBusImpl implements EventBus {
         checkEventType(eventType);
         checkSubscriber(subscriber);
 
-        if (eventSubscriberMap.get(eventType) == null) {
-            throw new MissingSubscriptionException("Unexisting subscription.");
-        }
-        if (!eventSubscriberMap.get(eventType).contains(subscriber)) {
-            throw new MissingSubscriptionException("No matching subscriber for event.");
-        }
+        checkForMissingSubscriptionException(eventType, subscriber);
 
         eventSubscriberMap.get(eventType).remove(subscriber);
     }
@@ -68,7 +63,7 @@ public class EventBusImpl implements EventBus {
 
 
         // alternatively we could avoid the cast to Subscriber<T>
-        // if we use the Subscriber raw type instead?
+        // if we use the Subscriber raw type instead(???)
         /*if (eventSubscriberMap.containsKey(event.getClass())) {
             for (Subscriber subscriber : eventSubscriberMap.get(event.getClass())) {
                 subscriber.onEvent(event);
@@ -102,10 +97,10 @@ public class EventBusImpl implements EventBus {
     @Override
     public <T extends Event<?>> Collection<Subscriber<?>> getSubscribersForEvent(Class<T> eventType) {
         if (eventSubscriberMap.get(eventType) == null) {
-            return Set.of();
+            return List.of();
         }
         else {
-            return Set.copyOf(eventSubscriberMap.get(eventType));
+            return List.copyOf(eventSubscriberMap.get(eventType));
         }
     }
 
@@ -123,5 +118,14 @@ public class EventBusImpl implements EventBus {
 
     private boolean isEventInTimestamp(Event<?> event, Instant from, Instant to) {
         return event.getTimestamp().compareTo(from) >= 0 && event.getTimestamp().compareTo(to) < 0;
+    }
+
+    private <T extends Event<?>> void checkForMissingSubscriptionException(Class<T> eventType, Subscriber<? super T> subscriber) throws MissingSubscriptionException {
+        if (eventSubscriberMap.get(eventType) == null) {
+            throw new MissingSubscriptionException("Unexisting subscription.");
+        }
+        if (!eventSubscriberMap.get(eventType).contains(subscriber)) {
+            throw new MissingSubscriptionException("No matching subscriber for event.");
+        }
     }
 }
