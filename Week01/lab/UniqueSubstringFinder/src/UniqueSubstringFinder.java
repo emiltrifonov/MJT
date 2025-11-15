@@ -1,3 +1,7 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 public class UniqueSubstringFinder {
     private static int getTrackerArrayIndex(char[] stringArr, int ind) {
         return stringArr[ind] - 'a';
