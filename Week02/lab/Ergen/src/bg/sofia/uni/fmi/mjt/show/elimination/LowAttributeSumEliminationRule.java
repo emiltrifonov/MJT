@@ -30,7 +30,7 @@ public final class LowAttributeSumEliminationRule extends AbstractEliminationRul
         int remainingErgenkasNullIndex = remainingErgenkas.length - 1;
         for (Ergenka ergenka : ergenkasCopy) {
             if (remainingErgenkasNonNullIndex >= remainingErgenkasCount
-            || remainingErgenkasNullIndex < 0) {
+                    || remainingErgenkasNullIndex < 0) {
                 break;
             }
             if (isErgenkaAboveThreshold(ergenka, threshold)) {

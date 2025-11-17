@@ -22,6 +22,8 @@ public final class PublicVoteEliminationRule extends AbstractEliminationRule {
 
     @Override
     public Ergenka[] eliminateErgenkas(Ergenka[] ergenkas) {
+        ergenkas = removeNullErgenkasFromArray(ergenkas);
+
         if (ergenkas == null || ergenkas.length == 0 || votes == null || votes.length == 0) {
             return ergenkas;
         }
