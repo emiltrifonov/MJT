@@ -9,7 +9,7 @@ public abstract class AbstractErgenka implements Ergenka {
     private final int humorLevel;
     private int rating;
 
-    public AbstractErgenka (String name, short age, int romanceLevel, int humorLevel, int rating) {
+    public AbstractErgenka(String name, short age, int romanceLevel, int humorLevel, int rating) {
         this.name = name;
         this.age = age;
         this.romanceLevel = romanceLevel;
@@ -50,6 +50,7 @@ public abstract class AbstractErgenka implements Ergenka {
     }
 
     protected abstract int calculateBonuses(DateEvent dateEvent);
+
     protected abstract void modifyRating(DateEvent dateEvent);
 
     protected void setRating(int rating) {

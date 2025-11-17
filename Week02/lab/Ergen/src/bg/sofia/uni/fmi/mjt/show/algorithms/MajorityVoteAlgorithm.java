@@ -12,8 +12,7 @@ public final class MajorityVoteAlgorithm {
         for (String vote : votes) {
             if (vote.equals(majorityElement)) {
                 counter++;
-            }
-            else {
+            } else {
                 counter--;
                 if (counter == 0) {
                     majorityElement = vote;

@@ -5,9 +5,7 @@ import bg.sofia.uni.fmi.mjt.show.elimination.EliminationRule;
 import bg.sofia.uni.fmi.mjt.show.elimination.LowestRatingEliminationRule;
 import bg.sofia.uni.fmi.mjt.show.ergenka.Ergenka;
 
-import java.util.Arrays;
-
-public final class ShowAPIImpl implements ShowAPI{
+public final class ShowAPIImpl implements ShowAPI {
     private Ergenka[] ergenkas;
     private final EliminationRule[] defaultEliminationRules;
 
@@ -17,8 +15,7 @@ public final class ShowAPIImpl implements ShowAPI{
         if (defaultEliminationRules == null || areAllRulesNull(defaultEliminationRules)) {
             this.defaultEliminationRules = new EliminationRule[1];
             this.defaultEliminationRules[0] = new LowestRatingEliminationRule();
-        }
-        else {
+        }  else {
             this.defaultEliminationRules = defaultEliminationRules;
         }
     }
@@ -45,8 +42,7 @@ public final class ShowAPIImpl implements ShowAPI{
     public void eliminateErgenkas(EliminationRule[] eliminationRules) {
         if (eliminationRules == null || eliminationRules.length == 0) {
             eliminateErgenkasWithSetOfRules(defaultEliminationRules);
-        }
-        else {
+        }  else {
             eliminateErgenkasWithSetOfRules(eliminationRules);
         }
     }

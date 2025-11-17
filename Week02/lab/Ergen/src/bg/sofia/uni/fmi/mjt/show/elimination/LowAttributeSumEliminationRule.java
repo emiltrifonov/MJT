@@ -18,11 +18,9 @@ public final class LowAttributeSumEliminationRule extends AbstractEliminationRul
         }
 
         int remainingErgenkasCount = getCountOfErgenkasAboveThreshold(ergenkas);
-
         if (remainingErgenkasCount == 0) {
             return new Ergenka[0];
         }
-
         Ergenka[] remainingErgenkas = new Ergenka[remainingErgenkasCount];
         Ergenka[] ergenkasCopy = Arrays.copyOf(ergenkas, ergenkas.length);
 
@@ -36,8 +34,7 @@ public final class LowAttributeSumEliminationRule extends AbstractEliminationRul
             if (isErgenkaAboveThreshold(ergenka, threshold)) {
                 if (ergenka == null) {
                     remainingErgenkas[remainingErgenkasNullIndex--] = null;
-                }
-                else {
+                }  else {
                     remainingErgenkas[remainingErgenkasNonNullIndex++] = ergenka;
                 }
             }

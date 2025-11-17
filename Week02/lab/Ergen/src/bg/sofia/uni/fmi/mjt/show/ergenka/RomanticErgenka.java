@@ -3,11 +3,15 @@ package bg.sofia.uni.fmi.mjt.show.ergenka;
 import bg.sofia.uni.fmi.mjt.show.date.DateEvent;
 import bg.sofia.uni.fmi.mjt.show.utils.FavoriteLocation;
 
+import java.awt.event.HierarchyBoundsAdapter;
+
 public final class RomanticErgenka extends AbstractErgenka {
     private static final int SHORT_DATE_LENGTH = 30;
     private static final int SHORT_DATE_PENALTY = -3;
     private static final int LONG_DATE_LENGTH = 120;
     private static final int LONG_DATE_PENALTY = -2;
+    private static final int ROMANCE_LEVEL_MULTIPLIER = 7;
+    private static final int HUMOR_LEVEL_DIVISOR = 3;
 
     private static final int FAVORITE_PLACE_REWARD = 5;
 
@@ -22,8 +26,8 @@ public final class RomanticErgenka extends AbstractErgenka {
     @Override
     protected void modifyRating(DateEvent dateEvent) {
         setRating(getRating() +
-                ( (getRomanceLevel() * 7) / dateEvent.getTensionLevel() )
-                + Math.floorDiv(getHumorLevel(), 3)
+                ( (getRomanceLevel() * ROMANCE_LEVEL_MULTIPLIER) / dateEvent.getTensionLevel() )
+                + Math.floorDiv(getHumorLevel(), HUMOR_LEVEL_DIVISOR)
                         + calculateBonuses(dateEvent));
     }
 

@@ -14,8 +14,7 @@ public final class PublicVoteEliminationRule extends AbstractEliminationRule {
 
         if (votes == null || votes.length == 0) {
             this.votes = new String[0];
-        }
-        else {
+        }  else {
             this.votes = Arrays.copyOf(votes, votes.length);
         }
     }
@@ -23,14 +22,11 @@ public final class PublicVoteEliminationRule extends AbstractEliminationRule {
     @Override
     public Ergenka[] eliminateErgenkas(Ergenka[] ergenkas) {
         ergenkas = removeNullErgenkasFromArray(ergenkas);
-
         if (ergenkas == null || ergenkas.length == 0 || votes == null || votes.length == 0) {
             return ergenkas;
         }
-
         String eliminatedErgenkaName = getEliminatedErgenkaName();
         Ergenka[] ergenkasCopy = Arrays.copyOf(ergenkas, ergenkas.length);
-
         if (isVoteSuccessful) {
             int remainingErgenkasCount = ergenkas.length;
             if (isEliminatedErgenkaPartOfErgenkas(eliminatedErgenkaName, ergenkas)) {
@@ -50,8 +46,7 @@ public final class PublicVoteEliminationRule extends AbstractEliminationRule {
             }
 
             return remainingErgenkas;
-        }
-        else {
+        }  else {
             return ergenkasCopy;
         }
     }
