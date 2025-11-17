@@ -14,14 +14,22 @@ public final class RomanticErgenka extends AbstractErgenka {
     private final FavoriteLocation favoriteLocation;
 
     public RomanticErgenka(String name, short age, int romanceLevel, int humorLevel, int rating, String favoriteDateLocation) {
+        // class FavoriteLocation handles null comparison logic
         favoriteLocation = new FavoriteLocation(favoriteDateLocation);
         super(name, age, romanceLevel, humorLevel, rating);
     }
 
     @Override
+    protected void modifyRating(DateEvent dateEvent) {
+        setRating(getRating() +
+                ( (getRomanceLevel() * 7) / dateEvent.getTensionLevel() )
+                + Math.floorDiv(getHumorLevel(), 3)
+                        + calculateBonuses(dateEvent));
+    }
+
+    @Override
     protected int calculateBonuses(DateEvent dateEvent) {
-        int penalty = getDateLengthPenalty(dateEvent.getDuration(), SHORT_DATE_LENGTH, LONG_DATE_LENGTH,
-                                            SHORT_DATE_PENALTY, LONG_DATE_PENALTY);
+        int penalty = getDateLengthPenaltyOrBonus(dateEvent.getDuration());
 
         if (favoriteLocation.isLocationOfDate(dateEvent)) {
             return penalty + FAVORITE_PLACE_REWARD;
@@ -32,8 +40,15 @@ public final class RomanticErgenka extends AbstractErgenka {
     }
 
     @Override
-    protected void modifyRating(DateEvent dateEvent) {
-        setRating(((getRomanceLevel() * 7) / dateEvent.getTensionLevel())
-                + (getHumorLevel() / 3) + calculateBonuses(dateEvent));
+    protected int getDateLengthPenaltyOrBonus(int dateLength) {
+        if (dateLength < SHORT_DATE_LENGTH) {
+            return SHORT_DATE_PENALTY;
+        }
+        else if (dateLength > LONG_DATE_LENGTH) {
+            return LONG_DATE_PENALTY;
+        }
+        else {
+            return 0;
+        }
     }
 }

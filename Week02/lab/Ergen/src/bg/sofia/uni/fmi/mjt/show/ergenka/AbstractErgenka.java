@@ -44,7 +44,9 @@ public abstract class AbstractErgenka implements Ergenka {
 
     @Override
     public void reactToDate(DateEvent dateEvent) {
-        modifyRating(dateEvent);
+        if (dateEvent != null) {
+            modifyRating(dateEvent);
+        }
     }
 
     protected abstract int calculateBonuses(DateEvent dateEvent);
@@ -54,18 +56,5 @@ public abstract class AbstractErgenka implements Ergenka {
         this.rating = rating;
     }
 
-    protected int getDateLengthPenalty(int dateLength,
-                                       int shortDateLength, int longDateLength,
-                                       int shortDatePenalty, int longDatePenalty) {
-        if (dateLength < shortDateLength) {
-            return shortDatePenalty;
-        }
-        else if (dateLength > longDateLength) {
-            return longDatePenalty;
-        }
-        else {
-            // Date is neither too short nor too long
-            return 0;
-        }
-    }
+    protected abstract int getDateLengthPenaltyOrBonus(int dateLength);
 }

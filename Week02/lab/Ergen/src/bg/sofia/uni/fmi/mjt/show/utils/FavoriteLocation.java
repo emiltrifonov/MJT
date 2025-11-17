@@ -4,12 +4,20 @@ import bg.sofia.uni.fmi.mjt.show.date.DateEvent;
 
 public final class FavoriteLocation {
     private final String favoriteLocation;
+    private final boolean isNull;
 
     public FavoriteLocation (String favoriteLocation) {
-        this.favoriteLocation = favoriteLocation.toLowerCase();
+        if (favoriteLocation == null) {
+            this.favoriteLocation = null;
+            isNull = true;
+        }
+        else {
+            this.favoriteLocation = favoriteLocation.toLowerCase();
+            isNull = false;
+        }
     }
 
     public boolean isLocationOfDate(DateEvent dateEvent) {
-        return favoriteLocation.equals(dateEvent.getLocation().toLowerCase());
+        return !isNull && favoriteLocation.equals(dateEvent.getLocation().toLowerCase());
     }
 }

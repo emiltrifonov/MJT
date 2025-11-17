@@ -5,23 +5,43 @@ import bg.sofia.uni.fmi.mjt.show.ergenka.Ergenka;
 
 import java.util.Arrays;
 
-public final class PublicVoteEliminationRule implements EliminationRule {
-    private static final String INVALID_ERGENKA_NAME = "";
+public final class PublicVoteEliminationRule extends AbstractEliminationRule {
+    private boolean isVoteSuccessful = false;
     private final String[] votes;
 
     public PublicVoteEliminationRule(String[] votes) {
-        this.votes = Arrays.copyOf(votes, votes.length);
+        votes = removeNullVotesFromArray(votes);
+
+        if (votes == null || votes.length == 0) {
+            this.votes = new String[0];
+        }
+        else {
+            this.votes = Arrays.copyOf(votes, votes.length);
+        }
     }
 
     @Override
     public Ergenka[] eliminateErgenkas(Ergenka[] ergenkas) {
-        String eliminatedErgenkaName = getEliminatedErgenkaName();
+        if (ergenkas == null || ergenkas.length == 0 || votes == null || votes.length == 0) {
+            return ergenkas;
+        }
 
-        if (!eliminatedErgenkaName.equals(INVALID_ERGENKA_NAME)) {
-            Ergenka[] remainingErgenkas = new Ergenka[ergenkas.length - 1];
+        String eliminatedErgenkaName = getEliminatedErgenkaName();
+        Ergenka[] ergenkasCopy = Arrays.copyOf(ergenkas, ergenkas.length);
+
+        if (isVoteSuccessful) {
+            int remainingErgenkasCount = ergenkas.length;
+            if (isEliminatedErgenkaPartOfErgenkas(eliminatedErgenkaName, ergenkas)) {
+                remainingErgenkasCount--;
+            }
+            Ergenka[] remainingErgenkas = new Ergenka[remainingErgenkasCount];
             int remainingErgenkasIndex = 0;
 
-            for (Ergenka ergenka : ergenkas) {
+            for (Ergenka ergenka : ergenkasCopy) {
+                if (remainingErgenkasIndex >= remainingErgenkasCount) {
+                    break;
+                }
+
                 if (!eliminatedErgenkaName.equals(ergenka.getName())) {
                     remainingErgenkas[remainingErgenkasIndex++] = ergenka;
                 }
@@ -30,7 +50,7 @@ public final class PublicVoteEliminationRule implements EliminationRule {
             return remainingErgenkas;
         }
         else {
-            return ergenkas;
+            return ergenkasCopy;
         }
     }
 
@@ -38,11 +58,10 @@ public final class PublicVoteEliminationRule implements EliminationRule {
         String eliminatedErgenkaName = MajorityVoteAlgorithm.execute(votes);
 
         if (isEliminationMajorityVote(eliminatedErgenkaName)) {
-            return eliminatedErgenkaName;
+            isVoteSuccessful = true;
         }
-        else {
-            return INVALID_ERGENKA_NAME;
-        }
+
+        return eliminatedErgenkaName;
     }
 
     private boolean isEliminationMajorityVote(String elimination) {
@@ -55,5 +74,45 @@ public final class PublicVoteEliminationRule implements EliminationRule {
         }
 
         return counter > votes.length / 2;
+    }
+
+    private String[] removeNullVotesFromArray(String[] votes) {
+        if (votes == null || votes.length == 0) {
+            return votes;
+        }
+
+        int nonNullVotesCount = getCountOfNonNullVotes(votes);
+        String[] nonNullVotes = new String[nonNullVotesCount];
+        int index = 0;
+
+        for (String vote : votes) {
+            if (vote != null) {
+                nonNullVotes[index++] = vote;
+            }
+        }
+
+        return nonNullVotes;
+    }
+
+    private int getCountOfNonNullVotes(String[] votes) {
+        int count = 0;
+
+        for (String vote : votes) {
+            if (vote != null) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    private boolean isEliminatedErgenkaPartOfErgenkas(String eliminatedErgenka, Ergenka[] ergenkas) {
+        for (Ergenka ergenka : ergenkas) {
+            if (ergenka.getName().equals(eliminatedErgenka)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

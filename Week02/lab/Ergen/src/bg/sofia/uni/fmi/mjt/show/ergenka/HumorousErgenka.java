@@ -4,8 +4,9 @@ import bg.sofia.uni.fmi.mjt.show.date.DateEvent;
 
 public final class HumorousErgenka extends AbstractErgenka {
     private static final int SHORT_DATE_LENGTH = 30;
-    private final int SHORT_DATE_PENALTY = -2;
-    private static final int LONG_DATE_LENGTH = 90;
+    private static final int SHORT_DATE_PENALTY = -2;
+    private static final int NORMAL_DATE_MAX_LENGTH = 90;
+    private static final int LONG_DATE_LENGTH = 120;
     private static final int LONG_DATE_PENALTY = -3;
 
     private static final int NORMAL_DATE_REWARD = 4;
@@ -15,16 +16,32 @@ public final class HumorousErgenka extends AbstractErgenka {
     }
 
     @Override
-    protected int calculateBonuses(DateEvent dateEvent) {
-        int penalty = getDateLengthPenalty(dateEvent.getDuration(), SHORT_DATE_LENGTH, LONG_DATE_LENGTH,
-                                        SHORT_DATE_PENALTY, LONG_DATE_PENALTY);
-
-        return penalty == 0 ? NORMAL_DATE_REWARD : penalty;
+    protected void modifyRating(DateEvent dateEvent) {
+        setRating(getRating() +
+                ( (getHumorLevel() * 5) / (dateEvent.getTensionLevel()) )
+                + Math.floorDiv(getRomanceLevel(), 3)
+                        + calculateBonuses(dateEvent));
     }
 
     @Override
-    protected void modifyRating(DateEvent dateEvent) {
-        setRating(((getHumorLevel() * 5) / (dateEvent.getTensionLevel()))
-                + (getRomanceLevel() / 3) + calculateBonuses(dateEvent));
+    protected int calculateBonuses(DateEvent dateEvent) {
+        return getDateLengthPenaltyOrBonus(dateEvent.getDuration());
+    }
+
+
+    @Override
+    protected int getDateLengthPenaltyOrBonus(int dateLength) {
+        if (dateLength < SHORT_DATE_LENGTH) {
+            return SHORT_DATE_PENALTY;
+        }
+        else if (dateLength <= NORMAL_DATE_MAX_LENGTH) {
+            return NORMAL_DATE_REWARD;
+        }
+        else if (dateLength > LONG_DATE_LENGTH) {
+            return LONG_DATE_PENALTY;
+        }
+        else {
+            return 0;
+        }
     }
 }
