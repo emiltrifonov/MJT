@@ -16,7 +16,6 @@ public class File {
      * @throws IllegalArgumentException if content is null
      */
     public File(String content) {
-        // added
         if (content == null) {
             throw new IllegalArgumentException("Content cannot be null.");
         }

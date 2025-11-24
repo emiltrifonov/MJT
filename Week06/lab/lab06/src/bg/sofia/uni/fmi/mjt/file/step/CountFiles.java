@@ -26,6 +26,4 @@ public class CountFiles implements Step<Collection<File>, Integer> {
         return input.size();
     }
 
-
-
 }

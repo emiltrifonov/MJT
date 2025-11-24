@@ -8,7 +8,8 @@ import bg.sofia.uni.fmi.mjt.fittrack.workout.Workout;
 public interface WorkoutFilter {
 
     /**
-     * Checks whether a given workout matches the filter's conditions.
+     * Checks whether a given workout matches the
+     * filter's conditions.
      *
      * @param workout the workout to check.
      * @return true if the workout matches the filter, false otherwise.

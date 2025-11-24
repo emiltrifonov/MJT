@@ -33,7 +33,8 @@ public class EventBusImpl implements EventBus {
     }
 
     @Override
-    public <T extends Event<?>> void unsubscribe(Class<T> eventType, Subscriber<? super T> subscriber) throws MissingSubscriptionException {
+    public <T extends Event<?>> void unsubscribe(Class<T> eventType, Subscriber<? super T> subscriber)
+            throws MissingSubscriptionException {
         checkEventType(eventType);
         checkSubscriber(subscriber);
 
@@ -61,7 +62,6 @@ public class EventBusImpl implements EventBus {
             }
         }
 
-
         // alternatively we could avoid the cast to Subscriber<T>
         // if we use the Subscriber raw type instead(???)
         /*if (eventSubscriberMap.containsKey(event.getClass())) {
@@ -79,6 +79,14 @@ public class EventBusImpl implements EventBus {
 
     @Override
     public Collection<? extends Event<?>> getEventLogs(Class<? extends Event<?>> eventType, Instant from, Instant to) {
+        if (eventType == null) {
+            throw new IllegalArgumentException("Event type cannot be null.");
+        }
+
+        if (from == null || to == null) {
+            throw new IllegalArgumentException("Timestamps cannot be null.");
+        }
+
         if (from.equals(to)) {
             return Collections.emptyList();
         }
@@ -91,15 +99,18 @@ public class EventBusImpl implements EventBus {
             }
         }
 
-        return eventLogs;
+        return List.copyOf(eventLogs);
     }
 
     @Override
     public <T extends Event<?>> Collection<Subscriber<?>> getSubscribersForEvent(Class<T> eventType) {
+        if (eventType == null) {
+            throw new IllegalArgumentException("Event type cannot be null.");
+        }
+
         if (eventSubscriberMap.get(eventType) == null) {
             return List.of();
-        }
-        else {
+        } else {
             return List.copyOf(eventSubscriberMap.get(eventType));
         }
     }
@@ -120,12 +131,17 @@ public class EventBusImpl implements EventBus {
         return event.getTimestamp().compareTo(from) >= 0 && event.getTimestamp().compareTo(to) < 0;
     }
 
-    private <T extends Event<?>> void checkForMissingSubscriptionException(Class<T> eventType, Subscriber<? super T> subscriber) throws MissingSubscriptionException {
+    private <T extends Event<?>> void checkForMissingSubscriptionException(Class<T> eventType,
+                                                                           Subscriber<? super T> subscriber)
+            throws MissingSubscriptionException {
+
         if (eventSubscriberMap.get(eventType) == null) {
             throw new MissingSubscriptionException("Unexisting subscription.");
         }
+
         if (!eventSubscriberMap.get(eventType).contains(subscriber)) {
             throw new MissingSubscriptionException("No matching subscriber for event.");
         }
+
     }
 }

@@ -3,9 +3,8 @@ package bg.sofia.uni.fmi.mjt.file.step;
 import bg.sofia.uni.fmi.mjt.file.File;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -19,15 +18,12 @@ class CountFilesTest {
 
     @Test
     void testProcessWithEmptyCollection() {
-        assertEquals(0, new CountFiles().process(Collections.emptySet()));
+        assertEquals(0, new CountFiles().process(Collections.emptyList()));
     }
 
     @Test
     void testProcessWithNonEmptyCollection() {
-        Collection<File> fileCollection = new HashSet<>();
-        fileCollection.add(new File(""));
-
-        assertEquals(fileCollection.size(), new CountFiles().process(fileCollection));
+        assertEquals(1, new CountFiles().process(List.of(new File(""))));
     }
 
 }

@@ -9,6 +9,7 @@ import bg.sofia.uni.fmi.mjt.eventbus.comparators.EventByPriorityAndTimestampComp
 import bg.sofia.uni.fmi.mjt.eventbus.events.Event;
 
 public class DeferredEventSubscriber<T extends Event<?>> implements Subscriber<T>, Iterable<T> {
+
     private final LinkedList<T> events;
 
     public DeferredEventSubscriber() {
@@ -32,6 +33,7 @@ public class DeferredEventSubscriber<T extends Event<?>> implements Subscriber<T
 
     private class DeferredEventSubscriberIterator implements Iterator<T> {
         private final PriorityQueue<T> itPq;
+
         public DeferredEventSubscriberIterator() {
             itPq = new PriorityQueue<>(new EventByPriorityAndTimestampComparator());
             itPq.addAll(events);
@@ -70,7 +72,7 @@ public class DeferredEventSubscriber<T extends Event<?>> implements Subscriber<T
      * @return true if there are unprocessed events, false otherwise
      */
     public boolean isEmpty() {
-        return !events.isEmpty();
+        return events.isEmpty();
     }
 
 }

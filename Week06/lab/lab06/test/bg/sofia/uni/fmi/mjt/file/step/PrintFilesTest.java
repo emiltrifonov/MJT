@@ -3,10 +3,12 @@ package bg.sofia.uni.fmi.mjt.file.step;
 import bg.sofia.uni.fmi.mjt.file.File;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -23,19 +25,20 @@ class PrintFilesTest {
 
         PrintFiles printFiles = new PrintFiles();
 
-        assertSame(fileCollection, printFiles.process(fileCollection));
+        Collection<File> returnedCollection = printFiles.process(fileCollection);
+
+        assertSame(fileCollection, returnedCollection);
     }
 
     @Test
     void testProcessReturnsSameCollection() {
-        Collection<File> fileCollection = new HashSet<>();
-        File f1 = new File("file1");
-        File f2 = new File("file2");
-        fileCollection.add(f1);
-        fileCollection.add(f2);
+        Collection<File> fileCollection = new ArrayList<>(List.of(new File("file")));
 
         PrintFiles printFiles = new PrintFiles();
 
-        assertSame(fileCollection, printFiles.process(fileCollection));
+        Collection<File> returnedCollection = printFiles.process(fileCollection);
+
+        assertSame(fileCollection, returnedCollection);
+        assertIterableEquals(fileCollection, returnedCollection);
     }
 }

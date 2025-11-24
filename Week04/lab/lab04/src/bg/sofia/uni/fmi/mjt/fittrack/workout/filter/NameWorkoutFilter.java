@@ -9,15 +9,13 @@ public class NameWorkoutFilter implements WorkoutFilter {
     public NameWorkoutFilter(String keyword, boolean caseSensitive) {
         if (keyword == null) {
             throw new IllegalArgumentException("Null keyword in NameWorkoutFilter constructor.");
-        }
-        else if (keyword.isBlank()) {
+        } else if (keyword.isBlank()) {
             throw new IllegalArgumentException("Blank keyword in NameWorkoutFilter constructor.");
         }
 
         if (caseSensitive) {
             this.keyword = String.copyValueOf(keyword.toCharArray());
-        }
-        else {
+        } else {
             this.keyword = String.copyValueOf(keyword.toCharArray()).toLowerCase();
         }
         this.caseSensitive = caseSensitive;

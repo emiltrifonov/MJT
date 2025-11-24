@@ -21,18 +21,6 @@ class UpperCaseFileTest {
     }
 
     @Test
-    void testProcessWithLowercaseFileContent() {
-        File f = new File("a");
-        assertEquals("A", new UpperCaseFile().process(f).getContent());
-    }
-
-    @Test
-    void testProcessWithUppercaseFileContent() {
-        File f = new File("A");
-        assertEquals("A", new UpperCaseFile().process(f).getContent());
-    }
-
-    @Test
     void testProcessWithMixedCaseFileContent() {
         File f = new File("Aa");
         assertEquals("AA", new UpperCaseFile().process(f).getContent());

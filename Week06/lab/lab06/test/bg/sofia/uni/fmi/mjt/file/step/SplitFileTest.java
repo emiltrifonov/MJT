@@ -25,14 +25,14 @@ class SplitFileTest {
     }
 
     @Test
-    void testProcessWithBlankFileContent() {
+    void testProcessWithEmptyFileContent() {
         String word = "";
         File f = new File(word);
 
         Set<File> expectedSet = new HashSet<>();
         expectedSet.add(new File(""));
 
-        var actualSet = new SplitFile().process(f);
+        Set<File> actualSet = new SplitFile().process(f);
 
         assertTrue(expectedSet.containsAll(actualSet) && actualSet.containsAll(expectedSet));
     }
@@ -44,7 +44,7 @@ class SplitFileTest {
 
         Set<File> expectedSet = Collections.emptySet();
 
-        var actualSet = new SplitFile().process(f);
+        Set<File> actualSet = new SplitFile().process(f);
 
         assertTrue(expectedSet.containsAll(actualSet) && actualSet.containsAll(expectedSet));
     }
@@ -57,7 +57,7 @@ class SplitFileTest {
         Set<File> expectedSet = new HashSet<>();
         expectedSet.add(new File(word));
 
-        var actualSet = new SplitFile().process(f);
+        Set<File> actualSet = new SplitFile().process(f);
 
         assertTrue(expectedSet.containsAll(actualSet) && actualSet.containsAll(expectedSet));
     }
@@ -72,7 +72,7 @@ class SplitFileTest {
         expectedSet.add(new File(word1));
         expectedSet.add(new File(word2));
 
-        var actualSet = new SplitFile().process(f);
+        Set<File> actualSet = new SplitFile().process(f);
 
         assertTrue(expectedSet.containsAll(actualSet) && actualSet.containsAll(expectedSet));
     }

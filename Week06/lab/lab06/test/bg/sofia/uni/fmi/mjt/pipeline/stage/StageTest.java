@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 class StageTest {
@@ -23,6 +25,10 @@ class StageTest {
         Stage<Integer, Integer> stage = Stage.start(step);
 
         assertEquals(2, stage.execute(1));
+
+        verify(step).process(1);
+
+        verifyNoMoreInteractions(step);
     }
 
     @Test
@@ -31,20 +37,21 @@ class StageTest {
     }
 
     @Test
-    void testProcessCorrectlyAddsNonNullStep() {
-        Step<Integer, Integer> step = mock();
-        when(step.process(1)).thenReturn(2);
-
-        Step<Integer, String> stepToAdd = mock();
-        when(stepToAdd.process(2)).thenReturn("3");
-
-        Stage<Integer, Integer> stage = Stage.start(step);
-        stage.addStep(stepToAdd);
-
-        assertEquals("3", stage.execute(1));
+    void testAddStepCorrectlyAddsNonNullStep() {
+        ///  ???????
     }
 
     @Test
-    void execute() {
+    void testExecuteProcessesInCorrectOrder() {
+        Step<Integer, String> first = mock();
+        when(first.process(1)).thenReturn("str");
+
+        Step<String, Integer> second = mock();
+        when(second.process("str")).thenReturn(2);
+
+        Stage<Integer, String> stage = Stage.start(first);
+        stage.addStep(second);
+
+        assertEquals(2, stage.execute(1));
     }
 }

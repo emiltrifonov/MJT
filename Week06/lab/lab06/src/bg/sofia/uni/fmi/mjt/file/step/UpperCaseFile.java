@@ -15,7 +15,7 @@ public class UpperCaseFile implements Step<File, File> {
      * Converts the content of the given {@link File} to uppercase.
      *
      * @param input the file whose content will be transformed
-     * @return the same {@link File} object with updated content
+     * @return a new {@link File} object with updated content
      *
      * @throws IllegalArgumentException if the input file or its content is null
      */
@@ -25,13 +25,7 @@ public class UpperCaseFile implements Step<File, File> {
             throw new IllegalArgumentException("Input file and its content cannot be null.");
         }
 
-        // original version doesn't actually modify the file
-        // input.getContent().toUpperCase();
-
-        // fixed
-        input.setContent(input.getContent().toUpperCase());
-
-        return input;
+        return new File(input.getContent().toUpperCase());
     }
 
 }

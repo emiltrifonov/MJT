@@ -1,6 +1,7 @@
 package bg.sofia.uni.fmi.mjt.pipeline;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple generic cache for storing key-value pairs in memory.
@@ -17,7 +18,9 @@ public class Cache {
     /**
      * Creates a new, empty cache.
      */
-    public Cache() {this.cache = new HashMap<>();}
+    public Cache() {
+        this.cache = new HashMap<>();
+    }
 
     /**
      * Stores a value associated with the given key.
@@ -25,7 +28,6 @@ public class Cache {
      *
      * @param key   the key to store
      * @param value the value associated with the key
-     *
      * @throws IllegalArgumentException if key or value is null
      */
     public void cacheValue(Object key, Object value) {
@@ -41,7 +43,6 @@ public class Cache {
      *
      * @param key the key whose value is to be returned
      * @return the cached value, or {@code null} if the key is not present
-     *
      * @throws IllegalArgumentException if key is null
      */
     public Object getCachedValue(Object key) {
@@ -57,7 +58,6 @@ public class Cache {
      *
      * @param key the key to check
      * @return {@code true} if the cache contains the key, {@code false} otherwise
-     *
      * @throws IllegalArgumentException if key is null
      */
     public boolean containsKey(Object key) {
@@ -76,8 +76,9 @@ public class Cache {
     }
 
     /**
-     *  Checks if the cache is empty
-     * */
+     * Checks if the cache is empty
+     *
+     */
     public boolean isEmpty() {
         return cache.isEmpty();
     }

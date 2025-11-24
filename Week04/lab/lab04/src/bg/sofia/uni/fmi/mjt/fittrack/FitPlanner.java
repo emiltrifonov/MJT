@@ -31,6 +31,10 @@ public final class FitPlanner implements FitPlannerAPI {
 
     @Override
     public List<Workout> findWorkoutsByFilters(List<WorkoutFilter> filters) {
+        if (filters == null) {
+            throw new IllegalArgumentException("Filters cannot be null.");
+        }
+
         if (returnEmptyWorkouts) {
             return List.of();
         }
@@ -50,16 +54,15 @@ public final class FitPlanner implements FitPlannerAPI {
     public List<Workout> generateOptimalWeeklyPlan(int totalMinutes) throws OptimalPlanImpossibleException {
         if (totalMinutes < 0) {
             throw new IllegalArgumentException("Negative totalMinutes in generateOptimalWeeklyPlan method.");
-        }
-        else if (totalMinutes == 0) {
+        } else if (totalMinutes == 0 || returnEmptyWorkouts) {
             return List.of();
         }
 
-        List<Workout> workoutsInPlan = new ArrayList<>(getOptimalWorkouts(totalMinutes));
-
-        if (workoutsInPlan.isEmpty()) {
-            throw new OptimalPlanImpossibleException("No possible workout plan.");
+        if (cantGenerateWorkoutPlan(totalMinutes)) {
+            throw new OptimalPlanImpossibleException("Shto vlizam tuka we.");
         }
+
+        List<Workout> workoutsInPlan = new ArrayList<>(getOptimalWorkouts(totalMinutes));
 
         workoutsInPlan.sort(new WorkoutByCaloriesAndDifficultyDescComparator());
 
@@ -79,7 +82,7 @@ public final class FitPlanner implements FitPlannerAPI {
             workoutsByType.get(workout.getType()).add(workout);
         }
 
-        return workoutsByType;
+        return Map.copyOf(workoutsByType);
     }
 
     @Override
@@ -89,9 +92,9 @@ public final class FitPlanner implements FitPlannerAPI {
         }
 
         List<Workout> sortedByCalories = new ArrayList<>(availableWorkouts);
-        sortedByCalories.sort(new WorkoutByCaloriesComparator());
+        sortedByCalories.sort(new WorkoutByCaloriesComparator().reversed());
 
-        return sortedByCalories;
+        return List.copyOf(sortedByCalories);
     }
 
     @Override
@@ -103,7 +106,7 @@ public final class FitPlanner implements FitPlannerAPI {
         List<Workout> sortedByDifficulty = new ArrayList<>(availableWorkouts);
         sortedByDifficulty.sort(new WorkoutByDifficultyComparator());
 
-        return sortedByDifficulty;
+        return List.copyOf(sortedByDifficulty);
     }
 
     @Override
@@ -126,7 +129,7 @@ public final class FitPlanner implements FitPlannerAPI {
      * @return Returns a Collection containing the optimal workouts
      */
     private Collection<Workout> getOptimalWorkouts(int totalMinutes) {
-        boolean[][] isUsed = new boolean[availableWorkouts.size()][totalMinutes+1];
+        boolean[][] isUsed = new boolean[availableWorkouts.size()][totalMinutes + 1];
         int[] dp = new int[totalMinutes + 1];
 
         for (int i = 1; i <= availableWorkouts.size(); i++) {
@@ -137,7 +140,7 @@ public final class FitPlanner implements FitPlannerAPI {
 
                 if (prev > dp[j]) {
                     dp[j] = prev;
-                    isUsed[i-1][j] = true;
+                    isUsed[i - 1][j] = true;
                 }
             }
         }
@@ -146,7 +149,7 @@ public final class FitPlanner implements FitPlannerAPI {
     }
 
     private Collection<Workout> getUsedWorkouts(int remainingMinutes, boolean[][] isUsed) {
-        Collection<Workout> usedWorkouts = new ArrayList<>();
+        Collection<Workout> usedWorkouts = new ArrayList<>(0);
 
         for (int i = availableWorkouts.size() - 1; i >= 0 && remainingMinutes > 0; i--) {
             if (isUsed[i][remainingMinutes]) {
@@ -157,5 +160,15 @@ public final class FitPlanner implements FitPlannerAPI {
         }
 
         return usedWorkouts;
+    }
+
+    private boolean cantGenerateWorkoutPlan(int totalMinutes) {
+        for (Workout workout : availableWorkouts) {
+            if (workout.getDuration() <= totalMinutes) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

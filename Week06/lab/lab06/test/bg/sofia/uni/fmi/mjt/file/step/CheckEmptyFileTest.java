@@ -4,6 +4,7 @@ import bg.sofia.uni.fmi.mjt.file.File;
 import bg.sofia.uni.fmi.mjt.file.exception.EmptyFileException;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -25,6 +26,12 @@ class CheckEmptyFileTest {
     void testProcessThrowsEmptyFileExceptionWhenFileContentIsEmpty() {
         File f = new File("");
         assertThrows(EmptyFileException.class, () -> new CheckEmptyFile().process(f));
+    }
+
+    @Test
+    void testProcessDoesNotThrowsEmptyFileExceptionWhenFileContentIsBlank() {
+        File f = new File("  ");
+        assertDoesNotThrow(() -> new CheckEmptyFile().process(f));
     }
 
     @Test

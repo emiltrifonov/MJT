@@ -1,6 +1,8 @@
 package bg.sofia.uni.fmi.mjt.pipeline;
 
+import java.util.ArrayList;
 import java.util.List;
+
 import bg.sofia.uni.fmi.mjt.pipeline.stage.Stage;
 
 /**
@@ -27,7 +29,6 @@ public final class Pipeline<I, O> {
      * @param <I>          the type of input data for the pipeline
      * @param <O>          the type of output produced by the initial stage
      * @return a new pipeline starting with the given stage
-     *
      * @throws IllegalArgumentException if initialStage is null
      */
     public static <I, O> Pipeline<I, O> start(Stage<I, O> initialStage) {
@@ -44,8 +45,15 @@ public final class Pipeline<I, O> {
      * @param stages the initial list of stages
      */
     private Pipeline(List<Stage<?, ?>> stages) {
+        this(new ArrayList<>(stages), new Cache());
+    }
+
+    /**
+     * Package-private constructor used for testing purposes.
+     */
+    Pipeline(List<Stage<?, ?>> stages, Cache cache) {
         this.stages = stages;
-        this.cache = new Cache();
+        this.cache = cache;
     }
 
     /**
@@ -55,7 +63,7 @@ public final class Pipeline<I, O> {
      * the current pipeline. The returned pipeline is updated to reflect the new
      * output type {@code NEW_O}.
      *
-     * @param stage the stage to add
+     * @param stage   the stage to add
      * @param <NEW_O> the output type of the new stage
      * @return this pipeline instance cast to a pipeline producing {@code NEW_O}
      */

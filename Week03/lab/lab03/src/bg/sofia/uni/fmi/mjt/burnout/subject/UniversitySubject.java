@@ -24,7 +24,7 @@ public record UniversitySubject(String name, int credits, int rating, Category c
         else if (name.isBlank()) {
             throw new IllegalArgumentException("Blank name in UniversitySubject constructor");
         }
-        else if (credits < 0) {
+        else if (credits <= 0) {
             throw new IllegalArgumentException("Negative credits in UniversitySubject constructor");
         }
         else if (rating < RATING_MIN || rating > RATING_MAX) {
@@ -33,7 +33,7 @@ public record UniversitySubject(String name, int credits, int rating, Category c
         else if (category == null) {
             throw new IllegalArgumentException("Null category in UniversitySubject constructor");
         }
-        else if (neededStudyTime < 0) {
+        else if (neededStudyTime <= 0) {
             throw new IllegalArgumentException("Negative neededStudyTime in UniversitySubject constructor");
         }
     }

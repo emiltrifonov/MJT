@@ -16,17 +16,13 @@ public abstract class AbstractWorkout {
     public AbstractWorkout(String name, int duration, int caloriesBurned, int difficulty) {
         if (name == null) {
             throw new InvalidWorkoutException("Null name in workout constructor.");
-        }
-        else if (name.isBlank()) {
+        } else if (name.isBlank()) {
             throw new InvalidWorkoutException("Blank name in workout constructor.");
-        }
-        else if (duration <= 0) {
+        } else if (duration <= 0) {
             throw new InvalidWorkoutException("Non-positive duration in workout constructor.");
-        }
-        else if (caloriesBurned <= 0) {
+        } else if (caloriesBurned <= 0) {
             throw new InvalidWorkoutException("Non-positive caloriesBurned in workout constructor.");
-        }
-        else if (difficulty < MIN_DIFF || difficulty > MAX_DIFF) {
+        } else if (difficulty < MIN_DIFF || difficulty > MAX_DIFF) {
             throw new InvalidWorkoutException("Difficulty outside expected range in workout constructor.");
         }
 
@@ -57,7 +53,8 @@ public abstract class AbstractWorkout {
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof AbstractWorkout that)) return false;
-        return getType() == that.getType() && getDuration() == that.getDuration() && getCaloriesBurned() == that.getCaloriesBurned() && getDifficulty() == that.getDifficulty();
+        return getType() == that.getType() && getDuration() == that.getDuration() &&
+                getCaloriesBurned() == that.getCaloriesBurned() && getDifficulty() == that.getDifficulty();
     }
 
     @Override
