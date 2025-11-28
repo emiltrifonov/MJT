@@ -64,13 +64,14 @@ public final class Pipeline<I, O> {
      * output type {@code NEW_O}.
      *
      * @param stage   the stage to add
-     * @param <NEW_O> the output type of the new stage
+     * @param <NewO> the output type of the new stage
      * @return this pipeline instance cast to a pipeline producing {@code NEW_O}
      */
     // original was <? super O> not sure tho
-    public <NEW_O> Pipeline<I, NEW_O> addStage(Stage<? extends O, NEW_O> stage) {
+    public <NewO> Pipeline<I, NewO> addStage(Stage<? super O, NewO> stage) {
         stages.add(stage);
-        return (Pipeline<I, NEW_O>) this;
+        cache.clear();
+        return (Pipeline<I, NewO>) this;
     }
 
     /**
@@ -97,6 +98,7 @@ public final class Pipeline<I, O> {
         cache.cacheValue(input, current);
         return (O) current;
     }
+
 }
 
 

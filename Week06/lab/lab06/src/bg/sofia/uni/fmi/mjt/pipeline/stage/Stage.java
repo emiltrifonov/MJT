@@ -53,18 +53,17 @@ public final class Stage<I, O> {
      * The returned stage updates the output type to {@code NEW_O}.
      *
      * @param step    the step to add
-     * @param <NEW_O> the output type of the new step
+     * @param <NewO> the output type of the new step
      * @return this stage instance cast to have output type {@code NEW_O}
      * @throws IllegalArgumentException if step is null
      */
-    // original was <? super O> not sure tho
-    public <NEW_O> Stage<I, NEW_O> addStep(Step<? extends O, NEW_O> step) {
+    public <NewO> Stage<I, NewO> addStep(Step<? super O, NewO> step) {
         if (step == null) {
             throw new IllegalArgumentException("Step cannot be null.");
         }
 
         steps.add(step);
-        return (Stage<I, NEW_O>) this;
+        return (Stage<I, NewO>) this;
     }
 
     /**
