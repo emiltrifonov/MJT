@@ -26,3 +26,8 @@ replay_pid*
 *.xml
 *.gitignore
 *.iml
+
+*.png
+*.jpg
+*.jpeg
+*.bmp
