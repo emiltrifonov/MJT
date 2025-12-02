@@ -58,11 +58,6 @@ public class LocalFileSystemImageManager implements FileSystemImageManager {
             throw new IOException("Image file already exists.");
         }
 
-        // Idk about this vro
-        /*if (imageFile.getParentFile() == null) {
-            throw new IOException("Parent directory does not exist.");
-        }*/
-
         // JavaDoc doesn't specify that we need to test
         // imageFile for format correctness, so it is
         // assumed that the format is always valid
