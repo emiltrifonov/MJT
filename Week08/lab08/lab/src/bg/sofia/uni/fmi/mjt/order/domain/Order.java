@@ -1,7 +1,8 @@
 package bg.sofia.uni.fmi.mjt.order.domain;
 
+import bg.sofia.uni.fmi.mjt.order.date.DateParser;
+
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -9,8 +10,8 @@ public record Order(String id, LocalDate date, String product, Category category
                           double price, int quantity, double totalSales, String customerName,
                           String customerLocation, PaymentMethod paymentMethod, Status status) {
 
-    private static final String DELIMITER = ",";
-    private static final int FIELDS_COUNT = 11;
+    static final String DELIMITER = ",";
+    static final int FIELDS_COUNT = 11;
     private static final int ID_INDEX = 0;
     private static final int DATE_INDEX = 1;
     private static final int PRODUCT_INDEX = 2;
@@ -39,7 +40,7 @@ public record Order(String id, LocalDate date, String product, Category category
         }
 
         return new Order(tokens[ID_INDEX],
-                getDate(tokens[DATE_INDEX]),
+                DateParser.parse(tokens[DATE_INDEX]),
                 tokens[PRODUCT_INDEX],
                 getCategory(tokens[CATEGORY_INDEX]),
                 Double.parseDouble(tokens[PRICE_INDEX]),
@@ -60,10 +61,6 @@ public record Order(String id, LocalDate date, String product, Category category
     @Override
     public int hashCode() {
         return Objects.hashCode(id());
-    }
-
-    private static LocalDate getDate(String string) {
-        return LocalDate.parse(string, DateTimeFormatter.ofPattern("dd-MM-yy"));
     }
 
     private static Category getCategory(String string) {

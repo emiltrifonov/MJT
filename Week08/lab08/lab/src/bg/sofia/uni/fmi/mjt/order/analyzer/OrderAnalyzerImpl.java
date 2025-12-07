@@ -6,9 +6,12 @@ import bg.sofia.uni.fmi.mjt.order.domain.PaymentMethod;
 import bg.sofia.uni.fmi.mjt.order.domain.Status;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -20,7 +23,13 @@ public class OrderAnalyzerImpl implements OrderAnalyzer {
     private static final Long MIN_SUSPICIOUS_ORDERS = 3L;
 
     public OrderAnalyzerImpl(List<Order> orders) {
-        this.orders = orders;
+        if (orders == null) {
+            this.orders = new ArrayList<>();
+        } else {
+            this.orders = orders.stream()
+                    .filter(Objects::nonNull)
+                    .toList();
+        }
     }
 
     @Override
@@ -30,6 +39,10 @@ public class OrderAnalyzerImpl implements OrderAnalyzer {
 
     @Override
     public List<Order> ordersByCustomer(String customer) {
+        if (orders.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         return orders.stream()
                 .filter(o -> o.customerName().equals(customer))
                 .toList();
@@ -37,6 +50,10 @@ public class OrderAnalyzerImpl implements OrderAnalyzer {
 
     @Override
     public Map.Entry<LocalDate, Long> dateWithMostOrders() {
+        if (orders.isEmpty()) {
+            return null;
+        }
+
         var map = orders.stream()
                 .collect(Collectors.groupingBy(Order::date, Collectors.counting()));
 
@@ -57,11 +74,21 @@ public class OrderAnalyzerImpl implements OrderAnalyzer {
             throw new IllegalArgumentException("N cannot be negative.");
         }
 
+        if (orders.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         return orders.stream()
                 .collect(Collectors.groupingBy(Order::product, Collectors.counting()))
                 .entrySet()
                 .stream()
-                .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue()))
+                .sorted((e1, e2) -> {
+                    if (Long.compare(e1.getValue(), e2.getValue()) == 0) {
+                        return e1.getKey().compareTo(e2.getKey());
+                    } else {
+                        return Long.compare(e2.getValue(), e1.getValue());
+                    }
+                })
                 .limit(n)
                 .map(Map.Entry::getKey)
                 .toList();
@@ -69,12 +96,20 @@ public class OrderAnalyzerImpl implements OrderAnalyzer {
 
     @Override
     public Map<Category, Double> revenueByCategory() {
+        if (orders.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
         return orders.stream()
                 .collect(Collectors.groupingBy(Order::category, Collectors.summingDouble(Order::totalSales)));
     }
 
     @Override
     public Set<String> suspiciousCustomers() {
+        if (orders.isEmpty()) {
+            return Collections.emptySet();
+        }
+
         return orders.stream()
                 .filter(o -> o.status() == Status.CANCELLED &&
                         Double.compare(o.totalSales(), SUSPICIOUS_SUM_CAP) < 0)
@@ -87,6 +122,10 @@ public class OrderAnalyzerImpl implements OrderAnalyzer {
 
     @Override
     public Map<Category, PaymentMethod> mostUsedPaymentMethodForCategory() {
+        if (orders.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
         var map = orders.stream()
                 .collect(Collectors.groupingBy(Order::category,
                         Collectors.groupingBy(Order::paymentMethod, Collectors.counting())));
@@ -97,7 +136,7 @@ public class OrderAnalyzerImpl implements OrderAnalyzer {
                         e -> e.getValue().entrySet().stream()
                                 .max(Comparator.comparing(
                                                 Map.Entry<PaymentMethod, Long>::getValue)
-                                                .thenComparing(e1 -> e1.getKey().name())
+                                                .thenComparing(Map.Entry::getKey)
                                 )
                                 .orElseThrow()
                                 .getKey()
@@ -106,6 +145,10 @@ public class OrderAnalyzerImpl implements OrderAnalyzer {
 
     @Override
     public String locationWithMostOrders() {
+        if (orders.isEmpty()) {
+            return null;
+        }
+
         var map = orders.stream()
                 .collect(Collectors.groupingBy(Order::customerLocation, Collectors.counting()));
 
