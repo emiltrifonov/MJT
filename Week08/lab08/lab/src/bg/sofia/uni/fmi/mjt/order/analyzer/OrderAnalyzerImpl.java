@@ -39,6 +39,10 @@ public class OrderAnalyzerImpl implements OrderAnalyzer {
 
     @Override
     public List<Order> ordersByCustomer(String customer) {
+        if (customer == null || customer.isBlank()) {
+            throw new IllegalArgumentException("Customer cannot be null or blank");
+        }
+
         if (orders.isEmpty()) {
             return Collections.emptyList();
         }
@@ -127,17 +131,21 @@ public class OrderAnalyzerImpl implements OrderAnalyzer {
         }
 
         var map = orders.stream()
-                .collect(Collectors.groupingBy(Order::category,
-                        Collectors.groupingBy(Order::paymentMethod, Collectors.counting())));
+                .collect(Collectors.groupingBy(
+                        Order::category,
+                        Collectors.groupingBy(Order::paymentMethod, Collectors.counting())
+                ));
 
         return map.entrySet().stream()
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         e -> e.getValue().entrySet().stream()
-                                .max(Comparator.comparing(
-                                                Map.Entry<PaymentMethod, Long>::getValue)
-                                                .thenComparing(Map.Entry::getKey)
+                                .sorted(
+                                        Comparator.<Map.Entry<PaymentMethod, Long>>comparingLong(Map.Entry::getValue)
+                                                .reversed()
+                                                .thenComparing(entry -> entry.getKey().name())
                                 )
+                                .findFirst()
                                 .orElseThrow()
                                 .getKey()
                 ));

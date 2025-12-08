@@ -327,8 +327,8 @@ class OrderAnalyzerImplTest {
     @Test
     void testMostUsedPaymentMethodForCategoryWithoutTie() {
         Category c = Category.BOOKS;
-        PaymentMethod p1 = PaymentMethod.PAYPAL;
-        PaymentMethod p2 = PaymentMethod.GIFT_CARD;
+        PaymentMethod p1 = PaymentMethod.CREDIT_CARD;
+        PaymentMethod p2 = PaymentMethod.DEBIT_CARD;
 
         Order o1 = mock();
         when(o1.category()).thenReturn(c);
@@ -356,8 +356,8 @@ class OrderAnalyzerImplTest {
     @Test
     void testMostUsedPaymentMethodForCategoryWithTie() {
         Category c = Category.BOOKS;
-        PaymentMethod p1 = PaymentMethod.PAYPAL;
-        PaymentMethod p2 = PaymentMethod.GIFT_CARD;
+        PaymentMethod p1 = PaymentMethod.CREDIT_CARD;
+        PaymentMethod p2 = PaymentMethod.DEBIT_CARD;
 
         Order o1 = mock();
         when(o1.category()).thenReturn(c);
@@ -383,7 +383,7 @@ class OrderAnalyzerImplTest {
 
         var analyzer = new OrderAnalyzerImpl(orders);
 
-        assertEquals(p2, analyzer.mostUsedPaymentMethodForCategory().get(c));
+        assertEquals(p1, analyzer.mostUsedPaymentMethodForCategory().get(c));
     }
 
     @Test
