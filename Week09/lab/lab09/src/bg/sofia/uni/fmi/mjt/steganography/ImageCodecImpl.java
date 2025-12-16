@@ -1,133 +1,56 @@
 package bg.sofia.uni.fmi.mjt.steganography;
 
-import javax.imageio.ImageIO;
+import bg.sofia.uni.fmi.mjt.steganography.image.algorithm.embed.ImageEmbedder;
+import bg.sofia.uni.fmi.mjt.steganography.image.algorithm.embed.LMSBEmbedder;
+import bg.sofia.uni.fmi.mjt.steganography.image.algorithm.extract.ImageExtractor;
+import bg.sofia.uni.fmi.mjt.steganography.image.algorithm.extract.LMSBExtractor;
+import bg.sofia.uni.fmi.mjt.steganography.image.io.read.ImageReader;
+import bg.sofia.uni.fmi.mjt.steganography.image.io.write.ImageWriter;
+
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 public class ImageCodecImpl implements ImageCodec {
 
+    private static final ImageEmbedder IMAGE_EMBEDDER = new LMSBEmbedder();
+    private static final ImageExtractor IMAGE_EXTRACTOR = new LMSBExtractor();
+
     @Override
     public void embedPNGImages(String coverSourceDirectory, String secretSourceDirectory, String outputDirectory) {
+        createOutputDirectory(outputDirectory);
 
+        List<Path> coverImagesPaths = ImageReader.readImagesFromDirLexicographically(coverSourceDirectory);
+        List<Path> secretImagesPaths = ImageReader.readImagesFromDirLexicographically(secretSourceDirectory);
+
+        for (int i = 0; i < coverImagesPaths.size(); i++) {
+            Path coverImagePath = coverImagesPaths.get(i);
+            BufferedImage embedded = IMAGE_EMBEDDER.embed(coverImagePath, secretImagesPaths.get(i));
+            ImageWriter.write(embedded, coverImagePath, outputDirectory);
+        }
     }
 
     @Override
     public void extractPNGImages(String sourceDirectory, String outputDirectory) {
+        createOutputDirectory(outputDirectory);
 
-        try (var paths = Files.newDirectoryStream(Path.of(sourceDirectory))) {
+        List<Path> imagesPaths = ImageReader.readImagesFromDir(sourceDirectory);
 
-            for (var path : paths) {
-                if (path.getFileName().toString().endsWith(".png")) {
-                    extract(path, outputDirectory);
-                }
-            }
+        for (Path imagePath : imagesPaths) {
+            BufferedImage image = IMAGE_EXTRACTOR.extract(imagePath);
+            ImageWriter.write(image, imagePath, outputDirectory);
+        }
+    }
 
+    private void createOutputDirectory(String outputDirectory) {
+        try {
+            Files.createDirectories(Path.of(outputDirectory));
         } catch (IOException e) {
-            throw new UncheckedIOException("Error occurred while iterating through source directory.", e);
+            throw new UncheckedIOException("Error occurred while creating output directory.", e);
         }
-
-    }
-
-    private void extract(Path imagePath, String outputDirectory) throws IOException {
-        BufferedImage image = ImageIO.read(imagePath.toFile());
-        int width = extractWidth(image);
-        int height = extractHeight(image);
-
-        BufferedImage resultImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-
-        fillNewImage(image, resultImage);
-
-        ImageIO.write(resultImage, "png",
-                new File(outputDirectory + File.separator + imagePath.getFileName()));
-    }
-
-    private void fillNewImage(BufferedImage oldImage, BufferedImage newImage) {
-        int oldW = oldImage.getWidth(), oldH = oldImage.getHeight();
-        int newW = newImage.getWidth(), newH = newImage.getHeight();
-
-        int totalIndex = 8;
-
-        for (int newY = 0; newY < newH; newY++) {
-            for (int newX = 0; newX < newW; newX++) {
-
-                int oldX = totalIndex % oldW;
-                int oldY = totalIndex / oldW;
-
-                int pixel = oldImage.getRGB(oldX, oldY);
-                newImage.setRGB(newX, newY, getNewPixel(pixel));
-
-                totalIndex++;
-            }
-        }
-    }
-
-    int getNewPixel(int oldPixel) {
-        int pixel = 0;
-        int gray = 0;
-
-        int rBit = (oldPixel >> 16) & 1;
-        gray |= (rBit << 7);
-        int gBit = (oldPixel >> 8) & 1;
-        gray |= (gBit << 6);
-        int bBit = oldPixel & 1;
-        gray |= (bBit << 5);
-
-        pixel |= (gray << 16);
-        pixel |= (gray << 8);
-        pixel |= gray;
-
-        return pixel;
-    }
-
-    private int extractWidth(BufferedImage image) {
-        return extractDimension(image, 0);
-    }
-
-    private int extractHeight(BufferedImage image) {
-        return extractDimension(image, 4);
-    }
-
-    private int extractDimension(BufferedImage image, int startFrom) {
-        int dim = 0;
-        int w = image.getWidth();
-        int h = image.getHeight();
-
-        final int bitCount = 12;
-        final int bitIncrement = 3;
-        int bitCounter = 0;
-        for (int i = 0; i < h && bitCounter < bitCount; i++) {
-            for (int j = 0; j < w && bitCounter < bitCount; j++) {
-                if (--startFrom >= 0) {
-                    continue;
-                }
-
-                int pixel = image.getRGB(j, i);
-
-                dim |= get3LSBs(pixel, bitCount - bitCounter - 1);
-
-                bitCounter += bitIncrement;
-            }
-        }
-
-        return dim;
-    }
-
-    int get3LSBs(int number, int firstBitShifts) {
-        int result = 0;
-
-        int firstBit = ((number >> 16) & 1);
-        int secondBit = ((number >> 8) & 1);
-        int thirdBit = (number & 1);
-
-        result |= (firstBit << firstBitShifts--);
-        result |= (secondBit << firstBitShifts--);
-        result |= (thirdBit << firstBitShifts);
-
-        return result;
     }
 
 }
