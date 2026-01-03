@@ -76,12 +76,8 @@ public class ImageCodecImpl implements ImageCodec {
 
     private <T extends Task> void insertPoisonPills(MyBlockingQueue<T> queue, T poisonPill) {
         for (int i = 0; i < CONSUMERS_MAX_COUNT; i++) {
-            insertPoisonPill(queue, poisonPill);
+            queue.put(poisonPill);
         }
-    }
-
-    private <T extends Task> void insertPoisonPill(MyBlockingQueue<T> queue, T poisonPill) {
-        queue.put(poisonPill);
     }
 
     private List<Thread> startExtractingProducers(List<Path> imagePaths, String outputDirectory,
@@ -103,7 +99,6 @@ public class ImageCodecImpl implements ImageCodec {
         });
 
         producer.start();
-
         return producer;
     }
 
@@ -162,7 +157,6 @@ public class ImageCodecImpl implements ImageCodec {
         });
 
         producer.start();
-
         return producer;
     }
 
